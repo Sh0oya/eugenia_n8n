@@ -1,0 +1,134 @@
+{
+  "folders": {
+    "naming": {
+      "regex": "^[A-Z][a-zA-Z0-9\\s()-]*$",
+      "errorMessage": "Folder names must be in Title Case (starting with uppercase) and can contain letters, numbers, spaces, dashes, or parentheses."
+    }
+  },
+  "workflows": {
+    "naming": {
+      "regex": "^[A-Z][a-zA-Z0-9\\s()-]*$",
+      "errorMessage": "Workflow names must be in Title Case (starting with uppercase) and can contain letters, numbers, spaces, dashes, or parentheses."
+    },
+    "requireDescription": true,
+    "requireTags": false,
+    "minTags": 0,
+    "bannedNames": []
+  },
+  "nodes": {
+    "naming": {
+      "tolerateDefaultNames": false,
+      "duplicateSuffixFormat": "parenthesis",
+      "regex": "^[A-Z][a-zA-Z0-9\\s()\\-:/?]*$",
+      "errorMessage": "Node names must be in Title Case (starting with uppercase) and can contain letters, numbers, spaces, dashes, parentheses, colons, slashes or a question mark."
+    },
+    "notes": {
+      "requireNotes": false,
+      "requireNotesForTypes": [
+        "n8n-nodes-base.code"
+      ],
+      "errorMessage": "Notes are required for Code nodes to explain their logic."
+    },
+    "stickyNotes": {
+      "ignore": false,
+      "markdownValidation": true,
+      "colors": {
+        "toDo": 1,
+        "bugFixing": 3,
+        "futureImprovements": 4,
+        "specs": 5,
+        "needsHumanHelp": 6,
+        "grouping": 7
+      }
+    }
+  },
+  "variables": {
+    "naming": {
+      "convention": "camelCase",
+      "errorMessage": "Variables declared in Set/Edit Fields nodes must be in camelCase."
+    }
+  },
+  "language": {
+    "enabled": true,
+    "expected": "en",
+    "checkFields": [
+      "workflow.description",
+      "node.notes",
+      "node.name",
+      "variable.name"
+    ],
+    "allowedWords": [
+      "PDF",
+      "SMS",
+      "API",
+      "Gemini",
+      "n8n",
+      "JSON",
+      "URL",
+      "HTTP",
+      "HTTPS",
+      "REST",
+      "SQL",
+      "DB",
+      "OAuth",
+      "Webhook",
+      "AI",
+      "LLM",
+      "Google",
+      "GitHub",
+      "Notion",
+      "Gmail",
+      "LeRobot",
+      "WSL",
+      "GPU",
+      "CPU",
+      "RAM",
+      "homepage",
+      "RAG",
+      "XML",
+      "SHA",
+      "Sim",
+      "Isaac",
+      "Mathieu",
+      "Lucas",
+      "Peyrin",
+      "README",
+      "Eur",
+      "EUR",
+      "Urls",
+      "URLs",
+      "deduplicated",
+      "upsert",
+      "Embeddings",
+      "Flash-Lite",
+      "in-memory",
+      "e-mail",
+      "e-mails",
+      "fine-grained",
+      "read-only",
+      "cross-checking"
+    ],
+    "errorMessage": "Text, names, and variables must be written in English."
+  },
+  "ignore": {
+    "workflows": [],
+    "folders": [],
+    "nodes": [],
+    "variables": [],
+    "words": [
+      "sub-workflows",
+      "defineBelow",
+      "executeOnce",
+      "LangChain",
+      "metadata",
+      "backend"
+    ]
+  },
+  "ignoreRules": {
+    "nodes": {
+      "namingRegex": [
+        "n8n-nodes-base.webhook"
+      ]
+    }
+  }
+}
