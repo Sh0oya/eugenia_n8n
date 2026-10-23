@@ -1,43 +1,8 @@
 // Code nodes "Validate and Finalize Diagnostic" and "Render Report": what the AI answer may contain before it reaches Notion and the e-mail.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { evaluate, node, runCode } from './harness.mjs';
-
-const REPO = 'https://github.com/acme/tool';
-const RATING = { value: 3, justification: 'x', confidence: 'low', unratedReason: null };
-const verdict = (detail = 'ok', evidence = `${REPO}/blob/v1/README.md#install`) => ({ verdict: 'compatible', detail, evidence });
-
-const report = (extra = {}) => ({
-  repository: 'acme/tool', tldr: { recommendation: 'ok', mainBenefit: 'b', mainLimit: 'l', nextStep: 'n' }, usefulness: 'u',
-  existingAndAlternatives: { knownEquivalents: [], externalAlternatives: [], conclusion: 'c' },
-  compatibility: Object.fromEntries(['windows', 'wsl', 'cpu', 'gpu', 'ram', 'storage', 'dependencies'].map(k => [k, verdict()])),
-  conflicts: [], risks: [], projectCosts: [],
-  firstTrial: { feasibleLocally: true, prerequisites: [], steps: ['a'], expectedResult: 'r', durationMinutes: 20, resources: 'x', stop: 's', cleanup: 'c' },
-  ratings: Object.fromEntries(['usefulFeatures', 'easeOfUse', 'easeOfInstallation', 'pcPerformance', 'cost', 'privacy', 'documentation', 'maintenance', 'modifiability'].map(k => [k, RATING])),
-  examinedScope: { documents: [], limits: '' }, unknowns: [], ...extra,
-});
-
-const answer = (overrides = {}) => ({
-  output: { recommendation: 'ok', report: report(), usedContext: [{ id: 'profile-1', usage: 'u' }],
-    sources: [{ url: `${REPO}/releases/tag/v1`, type: 'github', usage: 'u' }], unknowns: [], ...overrides },
-});
-
-const EVIDENCE = { key: 'acme/tool', url: REPO, tag: 'v1', versionKind: 'stable release', releaseUrl: `${REPO}/releases/tag/v1`, publishedAt: '', license: 'MIT' };
-const GOAL = 'Entraîner un bras SO-101';
-
-const validate = input => runCode('Code - Validate and Finalize Diagnostic', {
-  input,
-  nodes: {
-    CONFIGURATION: { schemaVersion: '4.0', diagnosticModel: 'gemini-flash-latest' },
-    'Set - Gather Prompt Inputs': {
-      request: { id: 'req-1', receivedAt: new Date().toISOString() }, repository: EVIDENCE,
-      profile: [{ id: 'profile-1', label: 'p', text: 't' }], inventory: [],
-      decisions: [{ id: 'decision-1', repository: 'acme/old', decision: 'installé', url: 'https://www.notion.so/decision-1' }],
-      machine: {}, profileRevision: '', matches: [], limits: [],
-    },
-    'Set - Parse and Validate Request': { goal: GOAL },
-  },
-}).then(([item]) => item.json);
+import { evaluate, node } from './harness.mjs';
+import { EVIDENCE, GOAL, RATING, REPO, answer, render, report, validate, verdict } from './fixtures.mjs';
 
 test('a valid answer is kept, with the links to the examined repository', async () => {
   const result = await validate(answer());
@@ -99,9 +64,6 @@ test('the reuse key written with the report is the key looked up by the next req
   const lookup = node('Data Table - Find Existing Analysis').parameters.filters.conditions.find(c => c.keyName === 'reuseKey').keyValue;
   assert.equal(evaluate(lookup, { json: EVIDENCE, nodes: { 'Set - Parse and Validate Request': { goal: GOAL } } }), diagnostic.trace.reuseKey);
 });
-
-const DateTime = { fromISO: () => ({ setZone: () => ({ setLocale: () => ({ toFormat: () => '23 octobre 2026' }) }) }) };
-const render = diagnostic => runCode('Code - Render Report', { input: { diagnostic }, nodes: {}, DateTime }).then(([{ json }]) => json);
 
 test('the report is rendered as a Notion page and an e-mail, a failure too', async () => {
   const done = await render((await validate(answer())).diagnostic);

@@ -27,12 +27,22 @@ export const dollar = nodes => name => {
   return { first: () => items[0], last: () => items[items.length - 1], all: () => items };
 };
 
-// Evaluates one n8n expression with $json and $('...') stubs.
+// Fixed clock for $now, and a minimal DateTime (n8n gives expressions the luxon one): enough to format a stored date.
+const NOW = { toISODate: () => '2026-10-23', toISO: () => '2026-10-23T10:00:00.000+02:00', toFormat: () => '20261023-100000' };
+export const DateTime = {
+  fromISO: iso => {
+    const [year, month, day] = String(iso).slice(0, 10).split('-');
+    const value = { setZone: () => value, setLocale: () => value, toFormat: format => (format === 'dd/LL/yyyy' ? `${day}/${month}/${year}` : `${year}-${month}-${day}`) };
+    return value;
+  },
+};
+
+// Evaluates one n8n expression with $json, $now, DateTime and $('...') stubs.
 export const evaluate = (expression, { json = {}, nodes = {} } = {}) => {
   const body = expression.replace(/^=\s*\{\{/, '').replace(/\}\}\s*$/, '');
-  return new Function('$json', '$', `return (${body});`)(json, dollar(nodes));
+  return new Function('$json', '$', '$now', 'DateTime', `return (${body});`)(json, dollar(nodes), NOW, DateTime);
 };
 
 // Runs the jsCode of a Code node. `input` is what the node receives, `nodes` what $('...') returns.
-export const runCode = (nodeName, { input, nodes, DateTime = {} }) =>
+export const runCode = (nodeName, { input, nodes }) =>
   new AsyncFunction('$', '$input', 'DateTime', node(nodeName).parameters.jsCode)(dollar(nodes), { first: () => ({ json: input }) }, DateTime);

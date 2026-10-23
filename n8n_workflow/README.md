@@ -2,7 +2,7 @@
 
 > Colle l'URL d'un dépôt GitHub public : le workflow lit sa dernière release stable (ou, à défaut, sa branche par défaut), croise avec **ton** PC et **tes** outils (Notion), demande un diagnostic strict à Gemini, puis t'envoie un rapport en français par e-mail et dans Notion. **Rien n'est installé, rien n'est exécuté** : c'est une analyse de documents.
 
-![n8n](https://img.shields.io/badge/n8n-2.x-ea4b71) ![Gemini](https://img.shields.io/badge/Gemini-latest%20aliases-4285f4) ![Notion](https://img.shields.io/badge/Notion-natif-000000) ![Lint](https://img.shields.io/badge/n8ncli%20lint-0%20warning-brightgreen) ![Tests](https://img.shields.io/badge/tests-22%20OK-brightgreen)
+![n8n](https://img.shields.io/badge/n8n-2.x-ea4b71) ![Gemini](https://img.shields.io/badge/Gemini-latest%20aliases-4285f4) ![Notion](https://img.shields.io/badge/Notion-natif-000000) ![Lint](https://img.shields.io/badge/n8ncli%20lint-0%20warning-brightgreen) ![Tests](https://img.shields.io/badge/tests-41%20OK-brightgreen)
 
 | | |
 |---|---|
@@ -167,7 +167,7 @@ Ou séparément :
 ```bash
 npx n8ncli validate --no-version-check
 npx n8ncli lint --fail-on-warnings
-npm test               # 18 tests : expressions du workflow et 2 Code nodes, sans n8n ni appel réseau
+npm test               # 41 tests : expressions du workflow, 2 Code nodes, 4 e-mails et prompt, sans n8n ni appel réseau
 ```
 
 Le lint applique les standards du cours ([`n8n/config/n8n-standards.json`](n8n/config/n8n-standards.json)) : noms Title Case, variables camelCase, texte en anglais, notes obligatoires sur les Code nodes, couleurs des sticky notes. Les tests lisent `exports/can-my-pc-run-it.json` et exécutent ses expressions et ses Code nodes avec des données d'essai (`WORKFLOW_JSON=<fichier>` permet de les rejouer sur une autre version).
@@ -235,9 +235,9 @@ Pour ceux-ci, les nodes GitHub étaient remplacés par des données de test (sau
 |---|---|
 | `n8ncli validate` / `n8ncli lint --fail-on-warnings` | `[VALID]` / `[LINT-PASS]`, 0 avertissement |
 | Validateur du skill n8n-pro-max | 0 erreur, 0 avertissement |
-| `npm test` | 22 tests passent : vérification de l'URL (un seul dépôt), correspondance outil/dépôt, version examinée (release ou branche), nettoyage avant le node XML, lecture de `pyproject.toml`, filtrage des liens et images de l'IA, validations qui restent strictes, clé de réutilisation identique à l'écriture et à la lecture, rendu du rapport, filtre de réutilisation, Limit, taille du workflow. Les 18 premiers tests, rejoués sur la version 3.0, en faisaient échouer 10 : ils contrôlent bien les correctifs |
+| `npm test` | 41 tests passent : vérification de l'URL (un seul dépôt), correspondance outil/dépôt, version examinée (release ou branche), nettoyage avant le node XML, lecture de `pyproject.toml`, filtrage des liens et images de l'IA, validations qui restent strictes, clé de réutilisation identique à l'écriture et à la lecture, filtre de réutilisation, Limit, taille du workflow, **les 4 e-mails** (rapport, rapport d'un diagnostic en échec, rapport existant, alerte d'erreur : destinataire, sujet, lien Notion, repli sans page Notion, échappement du texte de l'IA et des erreurs, date, lien de l'exécution) et **le prompt** (exemples et règles écrits avec les balises réellement envoyées à l'IA, limites données une seule fois). Sur l'ancienne version, 7 des tests d'e-mails et 3 de ceux du prompt échouent, ce qui prouve qu'ils contrôlent quelque chose |
 
-**Pas encore testé**, faute de l'avoir importée dans n8n : la version 3.1 entière sur l'instance (aucun appel GitHub, Notion, Gmail ou Gemini réel avec elle), la lecture d'un dépôt sans release sur GitHub réel, le plantage du node XML corrigé (prouvé sur la bibliothèque `xml2js`, pas sur le node n8n), l'Error Trigger en production, une vraie soumission du formulaire publié, une réponse IA invalide et une panne Notion.
+**Pas encore testé**, faute de l'avoir importée dans n8n : la version 3.1 entière sur l'instance (aucun appel GitHub, Notion, Gmail ou Gemini réel avec elle), la lecture d'un dépôt sans release sur GitHub réel, le plantage du node XML corrigé (prouvé sur la bibliothèque `xml2js`, pas sur le node n8n), l'Error Trigger en production, une vraie soumission du formulaire publié, une réponse IA invalide et une panne Notion. Les e-mails sont testés en local (rendu à partir de données d'essai, aucun envoi) : l'envoi réel par Gmail n'a pas été refait avec la 3.1, et le prompt n'a pas été rejoué avec un vrai appel Gemini sur le schéma 4.0.
 
 ## Limites connues
 
@@ -258,6 +258,7 @@ Pour ceux-ci, les nodes GitHub étaient remplacés par des données de test (sau
 | Date | Version | Changement |
 |---|---|---|
 | 2026-10-23 | 3.1 | Revue hostile et correctifs : liens et images de l'IA filtrés, texte nettoyé avant le node XML, réutilisation limitée aux rapports livrés en entier, branche par défaut examinée sans release stable, correspondance outil/dépôt exacte, `env` et `limitItems` avec un Limit ; simplification (54 à 40 nodes) : JSON joint, modèle de réparation, création des tables, boucle sur plusieurs dépôts avec comparaison, issues et `requirements.txt` retirés ; document de transfert, tests, plan SVG du canvas |
+| 2026-10-23 | 3.1 | Prompt : exemples écrits avec les balises réellement envoyées à l'IA, limites données une seule fois ; 19 tests de plus (4 e-mails, prompt) |
 | 2026-10-23 | 3.0 | Sept workflows fusionnés en un seul : nodes natifs d'abord, sticky notes, credentials renommés, alias Gemini *latest*, réutilisation par lien, décisions installé / ignoré / désinstallé lues par l'IA, Data Tables remplies par le workflow, `.workflow.ts` et lint n8n-cli |
 | 2026-10-21 | 2.0 | Première version en production, sept workflows |
 

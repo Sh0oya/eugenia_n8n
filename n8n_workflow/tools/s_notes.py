@@ -14,6 +14,7 @@ def build(w):
         (-1000, -300), 860, 560, BLUE)
     w.sticky(
         "### Journal des Revues\n"
+        "- **23/10/2026 (M. Haye)** : prompt reviewed again: examples written with the real input tags, examination limits given once, tests for the four e-mails and the prompt.\n"
         "- **23/10/2026 (M. Haye)** : hostile review and fixes: AI links and images filtered, text cleaned before the XML node, only fully delivered reports reused, default branch examined when there is no stable release, exact tool matching, environment and item limit with a Limit node. Simplified to 40 nodes: attachment, repair model, table setup, loop over several repositories with a comparison, issues and requirements.txt removed. Gemini models and prompt reviewed: same models, prompt rules changed for the default branch, exact tool matching and the single report.\n"
         "- **23/10/2026 (M. Haye)** : v3.0, seven workflows merged into one.\n"
         "- **21/10/2026 (M. Haye)** : v2.0, first production version, seven workflows.\n"

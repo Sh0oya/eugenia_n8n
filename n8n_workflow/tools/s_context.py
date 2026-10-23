@@ -72,7 +72,7 @@ def build(w):
         ("inventory", "array", E(inventory)),
         ("decisions", "array", E(decisions)),
         ("matches", "array", E(f"(n => (r => {inventory}.filter(o => n(o.name) && (n(o.name) === n(r.key.split('/')[1]) || n(o.name) === n(r.key))).map(o => ({{ repository: r.key, tool: o.name, state: o.state, presence: o.presence, version: o.version, environment: o.environment }})))({EVIDENCE}))({NORM})")),
-        ("repository", "object", E(EVIDENCE)),
+        ("repository", "object", E(f"Object.fromEntries(Object.entries({EVIDENCE}).filter(e => e[0] !== 'limits'))")),
         ("limits", "array", E(f"[...({EVIDENCE}.limits || []),\n  (l => l.length ? `Inventory: tools without state or presence are treated as unknown: ${{l.join(', ')}}` : '')({inventory}.filter(o => !o.state || !o.presence).map(o => o.name)),\n"
                               f"  !Object.keys(({block}).machine || {{}}).length ? 'The machine block is missing in the Notion profile' : ''].filter(Boolean)"))),
         (7, c), note="Everything the AI may use, in one item: the request, the machine, the profile, the inventory, the user decisions and the GitHub evidence. The XML node turns it into the inputs of the prompt.")

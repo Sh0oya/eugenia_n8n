@@ -17,6 +17,8 @@ Un seul prompt, utilisé par `Basic LLM Chain - Write Diagnostic`. Il est écrit
    - `<output_format>` : un seul objet JSON, valeurs en français, URL seulement si elles figurent dans les entrées.
 3. **Entrées en XML** — le node natif `XML - Convert Inputs` transforme le JSON des preuves (`<machine>`, `<profile>`, `<inventory>`, `<decisions>`, `<matches>`, `<repository>` (README, `<dependencyFiles>` = `pyproject.toml`, notes de release…)…) en balises : le modèle sépare mieux les données des instructions.
 
+Les exemples et les règles sont écrits avec les balises que le workflow envoie vraiment (`<repository>`, `<matches>` répété, `<inventory>` répété…) : le test `tests/prompt.test.mjs` construit les entrées à partir des nodes et échoue si un exemple cite une balise qui n'existe pas. Les limites de l'examen (`<limits>`) sont données une seule fois, en haut des entrées.
+
 ## Les décisions de l'utilisateur
 
 La propriété `Decision` de la base Notion « Analyses » (`installé`, `ignoré`, `désinstallé`) est lue à chaque analyse et donnée à l'IA dans `<decisions>`. La règle 5 du contexte dit comment l'utiliser : un dépôt « installé » est connu (même si l'inventaire ne le liste pas) et compte parmi les outils présents pour chercher doublons, compléments et conflits ; « ignoré » est rappelé sans être recommandé de nouveau sauf changement essentiel ; « désinstallé » est traité comme absent, avec le motif en inconnue. L'IA ne contredit jamais une décision et cite son identifiant dans `usedContext`.
