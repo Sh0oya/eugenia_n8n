@@ -5,7 +5,7 @@ const d = $input.first().json.diagnostic;
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = v => (Array.isArray(v) ? v : v ? [v] : []);
 const one = s => String(s ?? '').replace(/\s*\n\s*/g, ' ').trim();
-const link = (url, text) => `<a href="${esc(url)}" style="color:#4f46e5;text-decoration:none">${esc(text)}</a>`;
+const link = (url, text) => `<a href="${/^https:\/\//i.test(url) ? esc(url) : '#'}" style="color:#4f46e5;text-decoration:none">${esc(text)}</a>`;
 
 const FR = {
   compatible: 'compatible', partial: 'partiel', blocking: 'bloquant', unknown: 'inconnu',
@@ -48,7 +48,7 @@ const markdownReport = r => {
   parts.push('### Utilité', one(r.usefulness));
   parts.push('### Existant et alternatives', bullets([
     ...list(ea.knownEquivalents).map(x => `${x.tool} — **${fr(x.relation)}** : ${x.justification}`),
-    ...list(ea.externalAlternatives).map(x => `Alternative externe : [${x.name}](${x.url}) — ${x.justification}`),
+    ...list(ea.externalAlternatives).map(x => `Alternative externe : ${x.url ? `[${x.name}](${x.url})` : x.name} — ${x.justification}`),
   ], x => x) || '- Aucun équivalent identifié.', one(ea.conclusion));
   parts.push('### Compatibilité', bullets([
     ...DIMENSIONS.filter(([k]) => c[k]).map(([k, label]) => `**${label}** : ${fr(c[k].verdict)} — ${c[k].detail}${c[k].evidence ? ` (preuve : ${c[k].evidence})` : ''}`),
@@ -106,7 +106,7 @@ const card = r => {
   rows.push(heading('Utilité'), block(esc(r.usefulness)));
   rows.push(heading('Existant et alternatives'), block(ul([
     ...list(ea.knownEquivalents).map(x => `${pill(x.relation)} <b>${esc(x.tool)}</b> — ${esc(x.justification)}`),
-    ...list(ea.externalAlternatives).map(x => `${pill('alternative', 'indigo')} ${link(x.url, x.name)} — ${esc(x.justification)}`),
+    ...list(ea.externalAlternatives).map(x => `${pill('alternative', 'indigo')} ${x.url ? link(x.url, x.name) : esc(x.name)} — ${esc(x.justification)}`),
   ]) + (ea.conclusion ? `<div style="margin-top:6px;color:#374151">${esc(ea.conclusion)}</div>` : '')));
   rows.push(heading('Compatibilité'), `<tr><td style="padding:4px 28px 6px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">${DIMENSIONS.filter(([k]) => c[k]).map(([k, name]) => `<tr>
     <td style="padding:8px 10px 8px 0;border-bottom:1px solid #f3f4f6;width:110px;vertical-align:top;font-size:13px;font-weight:600;color:#374151">${name}</td>
@@ -158,7 +158,7 @@ const emailHtml = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><m
     ${list(d.usedProfile?.passages).length ? `Contexte utilisé : ${d.usedProfile.passages.map(p => esc(p.label)).join(', ')}<br>` : ''}
     ${list(d.examinationLimits).length ? `Limites : ${d.examinationLimits.map(esc).join(' · ')}<br>` : ''}
     ${list(d.sources).length ? `Sources : ${d.sources.map((s, i) => link(s.url, `[${i + 1}]`)).join(' ')}<br>` : ''}<br>
-    📎 JSON complet du diagnostic en pièce jointe.<br>Diagnostic textuel : rien n’a été installé ni exécuté sur ton PC.</td></tr>
+    Le JSON complet du diagnostic est en bas de la page Notion.<br>Diagnostic textuel : rien n’a été installé ni exécuté sur ton PC.</td></tr>
 </table></td></tr></table></body></html>`;
 
 const jsonText = JSON.stringify(d, null, 2);

@@ -21,11 +21,11 @@ def rich(prop):
 def build(w):
     # ---------- reuse ----------
     r = 12
-    w.add("Data Table - Find Existing Analysis", *TABLE, table_get("analysis_history", [("reuseKey", E(REUSE_KEY)), ("status", "done")], limit=1), (1, r), alwaysOutputData=True,
-          note="Same repositories, same versions and same goal: the existing report is found by this key, without any AI call.")
+    w.add("Data Table - Find Existing Analysis", *TABLE, table_get("analysis_history", [("reuseKey", E(REUSE_KEY)), ("status", "done"), ("deliveryStatus", "complete")], limit=1), (1, r), alwaysOutputData=True,
+          note="Same repositories, same versions and same goal: the existing report is found by this key, without any AI call. Only a report delivered in full (Notion page created, nothing unreadable) is reused.")
     w.add("IF - Already Analyzed", *IF, {"conditions": conditions(cond(E(f"!!$json.requestId && !{REQ}.force"))), "options": {}}, (2, r))
     w.add("Gmail - Send Existing Report", *GMAIL, gmail_params(E("`Rapport existant - ${$json.repositoriesKey}`"), E(
-        "`<p>Ces dépôts ont déjà été analysés le <b>${DateTime.fromISO($json.createdAt).setLocale('fr').toFormat('dd/LL/yyyy')}</b> avec les mêmes versions (${$json.versions}) et le même objectif. Aucune nouvelle analyse n’a été lancée.</p>"
+        "`<p>Ces dépôts ont déjà été analysés le <b>${DateTime.fromISO($json.updatedAt || $json.createdAt).setLocale('fr').toFormat('dd/LL/yyyy')}</b> avec les mêmes versions (${$json.versions}) et le même objectif. Aucune nouvelle analyse n’a été lancée.</p>"
         "<p><b>TL;DR :</b> ${String($json.summary || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</p>"
         "<p>Rapport complet : <a href=\"${$json.notionUrl}\">${$json.notionUrl}</a></p><p>Pour refaire l’analyse, renvoyer le formulaire avec « Refaire l’analyse » sur Oui.</p>`")),
           (3, r + 1.2), **cred("gmail"), **RETRY)
@@ -61,20 +61,22 @@ def build(w):
     notion_add(w, "Notion - Get Decisions", {"resource": "databasePage", "operation": "getAll", "dataSourceId": locator(E(f"{CFG}.notionAnalysesDataSourceId")),
                                              "returnAll": True, "filterType": "none", "simple": False, "options": {}}, (4, c), alwaysOutputData=True, executeOnce=True, **RETRY,
                note="Reads the Analyses database to find the pages where the user chose Installed, Ignored or Uninstalled in the Decision property.")
-    w.add("Aggregate - Decisions", *AGGREGATE, {"aggregate": "aggregateAllItemData", "destinationFieldName": "decisionPages", "options": {}}, (5, c))
+    w.add("Limit - Analyses Pages", *LIMIT, {"maxItems": E(f"{CFG}.env === 'production' ? 999999 : {CFG}.limitItems"), "keep": "firstItems"}, (5, c),
+          note="Test mode: when CONFIGURATION.env is not production, only the first few pages of the Analyses database are kept (item limit in CONFIGURATION). In production nothing is cut.")
+    w.add("Aggregate - Decisions", *AGGREGATE, {"aggregate": "aggregateAllItemData", "destinationFieldName": "decisionPages", "options": {}}, (6, c))
     w.add("Set - Gather Prompt Inputs", *SET, fields(
         ("request", "object", E(f"({{ id: {REQ}.requestId, mode: {EVIDENCE}.length > 1 ? 'compare' : 'single', goal: {REQ}.goal || 'none, judge from the profile', date: $now.toISODate(), receivedAt: {REQ}.receivedAt }})")),
         ("machine", "object", E(f"({block}).machine || {{}}")),
         ("profileRevision", "string", E(f"({block}).revision || ''")),
-        ("profile", "array", E(f"String({MD} || '').replace(/```[\\s\\S]*?```/g, '').split(/\\n(?=#{{1,3}}\\s)/).map(s => s.trim()).filter(s => s.length > 20).map((s, i) => ({{ id: `profile-${{i + 1}}`, label: s.split('\\n')[0].replace(/^#+\\s*/, '').slice(0, 80), text: s.slice(0, 3000) }}))")),
+        ("profile", "array", E(f"String({MD} || '').replace(/```[\\s\\S]*?```/g, '').split(/\\n(?=#{{1,3}}\\s)/).map(s => s.trim()).filter(s => s.length > 20).map((s, i) => ({{ id: `profile-${{i + 1}}`, label: {CLEAN}(s.split('\\n')[0].replace(/^#+\\s*/, '').slice(0, 80)), text: {CLEAN}(s.slice(0, 3000)) }}))")),
         ("inventory", "array", E(inventory)),
         ("decisions", "array", E(decisions)),
-        ("matches", "array", E(f"(n => {EVIDENCE}.flatMap(r => {inventory}.filter(o => n(o.name).length >= 3 && (n(o.name).includes(n(r.key.split('/')[1])) || n(r.key.split('/')[1]).includes(n(o.name)))).map(o => ({{ repository: r.key, tool: o.name, state: o.state, presence: o.presence, version: o.version, environment: o.environment }}))))({NORM})")),
+        ("matches", "array", E(f"(n => {EVIDENCE}.flatMap(r => {inventory}.filter(o => n(o.name) && (n(o.name) === n(r.key.split('/')[1]) || n(o.name) === n(r.key))).map(o => ({{ repository: r.key, tool: o.name, state: o.state, presence: o.presence, version: o.version, environment: o.environment }}))))({NORM})")),
         ("repositories", "array", E(EVIDENCE)),
         ("limits", "array", E(f"[...{EVIDENCE}.flatMap(r => r.limits || []),\n  (l => l.length ? `Inventory: tools without state or presence are treated as unknown: ${{l.join(', ')}}` : '')({inventory}.filter(o => !o.state || !o.presence).map(o => o.name)),\n"
                               f"  !Object.keys(({block}).machine || {{}}).length ? 'The machine block is missing in the Notion profile' : ''].filter(Boolean)"))),
-        (6, c), note="Everything the AI may use, in one item: the request, the machine, the profile, the inventory, the user decisions and the GitHub evidence. The XML node turns it into the inputs of the prompt.")
+        (7, c), note="Everything the AI may use, in one item: the request, the machine, the profile, the inventory, the user decisions and the GitHub evidence. The XML node turns it into the inputs of the prompt.")
     w.link("IF - Already Analyzed", "Notion - Get Profile", 1)
-    w.chain("Notion - Get Profile", "Notion - Get Inventory", "Set - Format Inventory Items", "Aggregate - Inventory", "Notion - Get Decisions", "Aggregate - Decisions", "Set - Gather Prompt Inputs")
+    w.chain("Notion - Get Profile", "Notion - Get Inventory", "Set - Format Inventory Items", "Aggregate - Inventory", "Notion - Get Decisions", "Limit - Analyses Pages", "Aggregate - Decisions", "Set - Gather Prompt Inputs")
     w.group("## 4. Personal context from Notion\nThe profile (machine, activities, goals) and the inventory of tools are read once and given to the AI in full: the inventory is short enough to need no vector search. Tools that match a repository name are listed apart.",
-            ["Notion - Get Profile", "Notion - Get Inventory", "Set - Format Inventory Items", "Aggregate - Inventory", "Notion - Get Decisions", "Aggregate - Decisions", "Set - Gather Prompt Inputs"])
+            ["Notion - Get Profile", "Notion - Get Inventory", "Set - Format Inventory Items", "Aggregate - Inventory", "Notion - Get Decisions", "Limit - Analyses Pages", "Aggregate - Decisions", "Set - Gather Prompt Inputs"])

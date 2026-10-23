@@ -1,17 +1,8 @@
-"""Setup, triggers, CONFIGURATION, routing and request validation."""
+"""Triggers, CONFIGURATION, routing and request validation."""
 from lib import *
 
-# One place for the Data Table schemas: the setup trigger creates them, the delivery and error nodes fill them.
-TABLES = {
-    "analysis_history": [("requestId", "string"), ("status", "string"), ("repositoriesKey", "string"), ("versions", "string"),
-                         ("reuseKey", "string"), ("goal", "string"), ("summary", "string"), ("notionPageId", "string"),
-                         ("notionUrl", "string"), ("model", "string"), ("deliveryStatus", "string"), ("contextIds", "string"),
-                         ("note", "string")],
-    "error_incidents": [("workflowName", "string"), ("nodeName", "string"), ("errorMessage", "string"),
-                        ("executionId", "string"), ("executionUrl", "string")],
-}
-
-URL_PATTERN = r"/^https:\/\/(?:www\.)?github\.com\/([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?(?:[/?#].*)?$/i"
+RESERVED = "orgs|users|topics|features|sponsors|marketplace|collections|settings|apps|about|pricing|login|search|explore|trending|notifications"
+URL_PATTERN = r"/^https:\/\/(?:www\.)?github\.com\/(?!(?:" + RESERVED + r")\/)([\w.-]+)\/([\w.-]*?[\w-])(?:\.git)?\/?(?:[/?#].*)?$/i"
 CFG = "$('CONFIGURATION').first().json"
 
 
@@ -20,15 +11,6 @@ def E(js):
 
 
 def build(w):
-    # ---------- setup (run once) ----------
-    w.add("Manual - Setup Data Tables", "n8n-nodes-base.manualTrigger", 1, {}, (8, 3),
-          note="Run once on a new instance: creates the two Data Tables used by this workflow.")
-    w.add("Data Table - Create Analysis History", *TABLE, table_create("analysis_history", TABLES["analysis_history"]), (9, 3))
-    w.add("Data Table - Create Error Incidents", *TABLE, table_create("error_incidents", TABLES["error_incidents"]), (10, 3))
-    w.chain("Manual - Setup Data Tables", "Data Table - Create Analysis History", "Data Table - Create Error Incidents")
-    w.group("## Setup\nRun the manual trigger once on a new instance. The Data Tables are then filled by the delivery and by the error handler.",
-            ["Manual - Setup Data Tables", "Data Table - Create Analysis History", "Data Table - Create Error Incidents"])
-
     # ---------- triggers and configuration ----------
     w.add("Form - Diagnostic Request", "n8n-nodes-base.formTrigger", 2.6, {
         "authentication": "basicAuth",
@@ -47,6 +29,8 @@ def build(w):
     w.add("Error Trigger - Workflow Failed", "n8n-nodes-base.errorTrigger", 1, {}, (0, 5),
           note="This workflow is its own error workflow: set it in the workflow settings once it is published.")
     w.add("CONFIGURATION", *SET, fields(
+        ("env", "string", "production"),
+        ("limitItems", "number", 3),
         ("notificationEmail", "string", local("email", "you@example.com")),
         ("notionProfilePageId", "string", local("notionProfilePageId", "REPLACE_WITH_PROFILE_PAGE_ID")),
         ("notionInventoryDataSourceId", "string", local("notionInventoryDataSourceId", "REPLACE_WITH_INVENTORY_DATA_SOURCE_ID")),
@@ -58,8 +42,8 @@ def build(w):
         ("maxReadmeChars", "number", 9000),
         ("maxDependencyChars", "number", 5000),
         ("maxIssues", "number", 6),
-        ("schemaVersion", "string", "3.0"),
-        keep=True), (1, 4), note="Single place for every setting: e-mail, Notion identifiers, Gemini models and limits.")
+        ("schemaVersion", "string", "3.1"),
+        keep=True), (1, 4), note="Single place for every setting: environment (production, or test with an item limit), e-mail, Notion identifiers, Gemini models and limits.")
     w.add("Switch - Route by Trigger", *SWITCH, {"rules": {"values": [
         {"conditions": conditions(cond(E("$json.githubUrls !== undefined"))), "renameOutput": True, "outputKey": "request"},
         {"conditions": conditions(cond(E("$json.execution !== undefined"))), "renameOutput": True, "outputKey": "failure"},
@@ -73,7 +57,7 @@ def build(w):
     w.add("Set - Parse and Validate Request", *SET, fields(
         ("requestId", "string", E("`req-${$now.toFormat('yyyyLLdd-HHmmss')}-${Math.random().toString(36).slice(2, 6)}`")),
         ("receivedAt", "string", E("$now.toISO()")),
-        ("goal", "string", E("String($json.goal || '').trim().slice(0, 1000)")),
+        ("goal", "string", E(f"{CLEAN}(String($json.goal || '').trim().slice(0, 1000))")),
         ("force", "boolean", E("String($json.forceNew || '').startsWith('Oui')")),
         ("repositories", "array", E(f"{urls}.map(u => u.match({URL_PATTERN})).filter(Boolean).map(m => ({{ owner: m[1], name: m[2], key: `${{m[1]}}/${{m[2]}}`.toLowerCase(), url: `https://github.com/${{m[1]}}/${{m[2]}}` }})).filter((r, i, all) => all.findIndex(x => x.key === r.key) === i)")),
         ("errors", "array", E(f"[\n  ...{urls}.filter(Boolean).filter(u => !{URL_PATTERN}.test(u)).map(u => `Not an https GitHub repository URL: ${{u}}`),\n"

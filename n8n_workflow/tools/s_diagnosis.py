@@ -58,8 +58,7 @@ def build(w):
           note="System message = role. User message = goal, context, examples and output format in XML, then the inputs. Gemini Flash with a Flash-Lite fallback.")
     w.add("Gemini Chat - Main Model", *GEMINI_CHAT, chat_model("diagnosticModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (8.6, r + 1.7), **cred("gemini"))
     w.add("Gemini Chat - Fallback Model", *GEMINI_CHAT, chat_model("fallbackModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (9.4, r + 1.7), **cred("gemini"))
-    w.add("Output Parser - Diagnostic Schema", *PARSER, {"schemaType": "manual", "inputSchema": json.dumps(schema(), ensure_ascii=False, indent=1), "autoFix": True}, (10.2, r + 1.7))
-    w.add("Gemini Chat - Format Repair Model", *GEMINI_CHAT, chat_model("fallbackModel", 0, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (10.6, r + 3.2), **cred("gemini"))
+    w.add("Output Parser - Diagnostic Schema", *PARSER, {"schemaType": "manual", "inputSchema": json.dumps(schema(), ensure_ascii=False, indent=1), "autoFix": False}, (10.2, r + 1.7))
     w.add("Code - Validate and Finalize Diagnostic", *CODE, {"mode": "runOnceForAllItems", "jsCode": code("validate-diagnostic.js")}, (10, r),
           note="Why Code: cross-checking nested arrays (repositories, ratings, cited context) and assembling the final JSON is not possible with standard nodes. Evidence from GitHub always overrides the AI.")
 
@@ -70,7 +69,6 @@ def build(w):
     w.link("Gemini Chat - Main Model", "Basic LLM Chain - Write Diagnostic", 0, 0, "ai_languageModel")
     w.link("Gemini Chat - Fallback Model", "Basic LLM Chain - Write Diagnostic", 0, 1, "ai_languageModel")
     w.link("Output Parser - Diagnostic Schema", "Basic LLM Chain - Write Diagnostic", 0, 0, "ai_outputParser")
-    w.link("Gemini Chat - Format Repair Model", "Output Parser - Diagnostic Schema", 0, 0, "ai_languageModel")
-    w.group("## 5. AI diagnostic\nPrompt built from the course rules (role in the system message, XML sections, four examples, XML inputs). Gemini Flash, latest alias, with a Flash-Lite fallback and a structured output parser that repairs the format. The Code node then refuses any answer that contradicts the GitHub evidence.",
+    w.group("## 5. AI diagnostic\nPrompt built from the course rules (role in the system message, XML sections, five examples, XML inputs). Gemini Flash, latest alias, with a Flash-Lite fallback and a structured output parser with a strict schema. The Code node then refuses any answer that contradicts the GitHub evidence and removes links and images that the inputs do not contain.",
             ["XML - Convert Inputs", "Basic LLM Chain - Write Diagnostic", "Gemini Chat - Main Model", "Gemini Chat - Fallback Model", "Output Parser - Diagnostic Schema",
-             "Gemini Chat - Format Repair Model", "Code - Validate and Finalize Diagnostic"])
+             "Code - Validate and Finalize Diagnostic"])

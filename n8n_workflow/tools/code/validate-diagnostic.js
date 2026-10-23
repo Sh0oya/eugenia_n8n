@@ -5,9 +5,18 @@ const input = $('Set - Gather Prompt Inputs').first().json;
 const parsed = $('Set - Parse and Validate Request').first().json;
 const request = input.request;
 const answer = $input.first().json;
-const output = answer.output || {};
 const failure = answer.error ? String(answer.error.message || answer.error).slice(0, 300) : '';
 const repositories = input.repositories;
+
+// The AI text is written into a Notion page and an e-mail, and a README can try to steer it (prompt injection).
+// Only links to the examined repositories and to the user's own decisions survive; images and HTML-like tags never do.
+const allowedPrefixes = [...repositories.map(r => r.url), ...input.decisions.map(d => d.url)].filter(Boolean).map(u => u.toLowerCase());
+const allowed = url => { const u = String(url).toLowerCase(); return allowedPrefixes.some(p => u === p || ['/', '#', '?'].some(c => u.startsWith(p + c))); };
+const scrub = text => String(text).replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\b(?:https?:\/\/|javascript:|vbscript:|data:[a-z]+\/)[^\s)\]>"'<]*/gi, u => (allowed(u.replace(/[.,;:!?]+$/, '')) ? u : '[link removed]')).replace(/<(?=[A-Za-z/!?])/g, '‹');
+const sanitize = (value, key) => (typeof value === 'string' ? (key === 'url' ? (allowed(value) ? value : '') : scrub(value))
+  : Array.isArray(value) ? value.map(v => sanitize(v)) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, sanitize(v, k)])) : value);
+const output = sanitize(answer.output || {});
+const sources = (output.sources || []).filter(s => s.url);
 
 const CRITERIA = ['usefulFeatures', 'easeOfUse', 'easeOfInstallation', 'pcPerformance', 'cost', 'privacy', 'documentation', 'maintenance', 'modifiability'];
 const reasons = [];
@@ -44,7 +53,7 @@ const diagnostic = {
   status: ok ? 'done' : 'failed',
   mode: request.mode,
   goal: parsed.goal || null,
-  repositories: repositories.map(r => ({ repository: r.key, url: r.url, version: r.tag, releaseUrl: r.releaseUrl || null, publishedAt: r.publishedAt || null, license: r.license || null })),
+  repositories: repositories.map(r => ({ repository: r.key, url: r.url, version: r.tag, versionKind: r.versionKind, releaseUrl: r.releaseUrl || null, publishedAt: r.publishedAt || null, license: r.license || null })),
   usedProfile: {
     machine: input.machine,
     profileRevision: input.profileRevision || null,
@@ -55,8 +64,8 @@ const diagnostic = {
   recommendation: ok ? output.recommendation : 'Diagnostic non produit : relancer après correction de la cause.',
   reports: ok ? output.reports.map((report, index) => ({ ...report, repository: repositories[index].key, version: repositories[index].tag, url: repositories[index].url })) : [],
   comparison: ok && request.mode === 'compare' ? output.comparison : null,
-  sources: ok ? output.sources : [],
-  unknowns: ok ? (output.unknowns || []) : reasons,
+  sources: ok ? (sources.length ? sources : repositories.map(r => ({ url: r.releaseUrl || r.url, type: 'github', usage: 'Version examined' }))) : [],
+  unknowns: ok ? [...(output.unknowns || []), ...(sources.length < output.sources.length ? ['Links cited by the AI that were not part of the inputs were removed'] : [])] : reasons,
   examinationLimits: input.limits,
   trace: {
     engine: 'gemini',

@@ -26,6 +26,10 @@ LOCAL = {}
 if PROFILE == "instance":
     LOCAL = json.loads((TOOLS / "instance.local.json").read_text(encoding="utf-8"))
 
+# Text taken from GitHub or Notion goes through the XML node: control characters (ANSI colors in a pasted log) and a lone surrogate
+# (an emoji cut in two by a slice) make it fail with "Invalid character in string". Applied after every slice.
+CLEAN = "(s => String(s ?? '').replace(/[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\uFFFE\\uFFFF]/g, '').toWellFormed())"
+
 COL = 240   # horizontal grid step
 ROW = 200   # vertical grid step
 
@@ -240,12 +244,9 @@ def table_create(name, columns):
             "columns": {"column": [{"name": c, "type": t} for c, t in columns]}, "options": {"createIfNotExists": True}}
 
 
-def gmail_params(subject, message, attachment=False):
-    options = {"appendAttribution": False, "senderName": "Can My PC Run It"}
-    if attachment:
-        options["attachmentsUi"] = {"attachmentsBinary": [{"property": "data"}]}
+def gmail_params(subject, message):
     return {"sendTo": "={{ $('CONFIGURATION').first().json.notificationEmail }}", "subject": subject, "emailType": "html",
-            "message": message, "options": options}
+            "message": message, "options": {"appendAttribution": False, "senderName": "Can My PC Run It"}}
 
 
 def notion_create(title, properties, markdown):
