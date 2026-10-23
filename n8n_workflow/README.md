@@ -2,15 +2,15 @@
 
 > Colle l'URL d'un dépôt GitHub public : le workflow lit sa dernière release stable (ou, à défaut, sa branche par défaut), croise avec **ton** PC et **tes** outils (Notion), demande un diagnostic strict à Gemini, puis t'envoie un rapport en français par e-mail et dans Notion. **Rien n'est installé, rien n'est exécuté** : c'est une analyse de documents.
 
-![n8n](https://img.shields.io/badge/n8n-2.x-ea4b71) ![Gemini](https://img.shields.io/badge/Gemini-latest%20aliases-4285f4) ![Notion](https://img.shields.io/badge/Notion-natif-000000) ![Lint](https://img.shields.io/badge/n8ncli%20lint-0%20warning-brightgreen) ![Tests](https://img.shields.io/badge/tests-18%20OK-brightgreen)
+![n8n](https://img.shields.io/badge/n8n-2.x-ea4b71) ![Gemini](https://img.shields.io/badge/Gemini-latest%20aliases-4285f4) ![Notion](https://img.shields.io/badge/Notion-natif-000000) ![Lint](https://img.shields.io/badge/n8ncli%20lint-0%20warning-brightgreen) ![Tests](https://img.shields.io/badge/tests-22%20OK-brightgreen)
 
 | | |
 |---|---|
-| Workflow | `Can My PC Run It` : **1 workflow, 47 nodes** en 7 blocs numérotés, 11 sticky notes |
+| Workflow | `Can My PC Run It` : **1 workflow, 40 nodes** en 7 blocs numérotés, 11 sticky notes |
 | Formats livrés | [`n8n/workflows/can-my-pc-run-it.workflow.ts`](n8n/workflows/can-my-pc-run-it.workflow.ts) (SDK n8n, pour n8n-cli) et [`exports/can-my-pc-run-it.json`](exports/can-my-pc-run-it.json) (import direct) |
-| Schéma du diagnostic | version 3.1 |
+| Schéma du diagnostic | version 4.0 (un rapport par demande) |
 | Données | 2 Data Tables n8n, remplies par le workflow lui-même |
-| Version | 3.1 — 23 octobre 2026, après une revue hostile ([`revues/`](revues/REVUE_2026-10-23.md)) : correctifs de sécurité et de fiabilité, 54 nodes ramenés à 47. La variante complète à 157 nodes reste dans l'historique git (commit `b4c46da`) |
+| Version | 3.1 — 23 octobre 2026, après une revue hostile ([`revues/`](revues/REVUE_2026-10-23.md)) : correctifs de sécurité et de fiabilité, 54 nodes ramenés à 40 : un seul dépôt par demande, plus de lecture des issues ni de `requirements.txt`. La version à 47 nodes (plusieurs dépôts, comparaison, issues, `requirements.txt`) est dans l'historique git (commit `6760340`), la variante à 157 nodes aussi (commit `b4c46da`) |
 | Document de transfert | [`docs/HANDOVER.md`](docs/HANDOVER.md) : fiche d'identité, credentials, alertes, kill switch |
 
 > **État du déploiement** : cette version 3.1 est dans GitHub ; l'instance n8n fait encore tourner la 3.0. Rien n'a été poussé sur l'instance : voir « Tests effectués ».
@@ -39,7 +39,7 @@ Le canvas, dessiné depuis le JSON livré (mêmes positions et mêmes sticky not
 flowchart LR
   F["Formulaire<br/>(Basic Auth)"] --> V{"Demande<br/>valide ?"}
   V -- non --> X["Arrêt avec la raison<br/>(alerte par e-mail)"]
-  V -- oui --> G["GitHub (nodes natifs)<br/>release stable ou branche par défaut,<br/>README, pyproject.toml, requirements.txt, issues<br/>1 passage par dépôt"]
+  V -- oui --> G["GitHub (nodes natifs)<br/>release stable ou branche par défaut,<br/>README, pyproject.toml"]
   G --> R{"Déjà analysé ?<br/>même lien + version + objectif,<br/>livré en entier"}
   R -- oui --> RU["Rapport existant<br/>par e-mail (0 appel IA)"]
   R -- non --> C["Contexte Notion<br/>profil + inventaire<br/>+ tes décisions"]
@@ -72,13 +72,13 @@ Le détail règle par règle (60 règles du cours « n8n x Eugenia ») est dans 
 | Workflow propre | noms « Outil - Action » en Title Case anglais, variables en camelCase, un seul `CONFIGURATION` (avec `env` et `limitItems`), 7 blocs, notes sur les nodes importants |
 | Nodes natifs d'abord | GitHub, Notion, Gmail, Data Table, Loop Over Items, Switch, Limit, XML, Extract from File, chaîne LLM Gemini avec parseur et modèle de secours. **Aucun HTTP Request.** Seuls 2 Code nodes, annotés : rendu du rapport (Markdown + HTML depuis le même JSON) et contrôle du diagnostic |
 | Modèles IA « latest » | `gemini-flash-latest` et `gemini-flash-lite-latest`, modifiables dans `CONFIGURATION` |
-| Moins de workflows | 1 workflow, 47 nodes (la v2 en comptait 7 et environ 150) |
+| Moins de workflows | 1 workflow, 40 nodes (la v2 en comptait 7 et environ 150) |
 | Mode test | `CONFIGURATION.env` autre que `production` : le node `Limit - Analyses Pages` ne garde que `limitItems` pages de la base Analyses |
 | n8n-cli | `n8ncli validate` et `n8ncli lint --fail-on-warnings` passent sans avertissement |
 | Data Tables remplies | 2 tables (voir plus bas) |
 | Prompt bien fait | rôle dans le message système, sections XML, 5 exemples, entrées en XML, schéma JSON strict, réponse validée par code : [docs/PROMPTS.md](docs/PROMPTS.md) |
 
-**Écarts connus au cours** (choisis ou restants) : les Code nodes dépassent la cible d'environ 50 lignes (72 et 175 lignes) ; pas de DLQ rejouable (un journal seulement) ; pas de jeu de test à trois catégories sur n8n ; pas de workflow d'Evaluation ; 47 nodes là où le cours déconseille « des dizaines » (en tension avec la consigne « moins de workflows » ) ; le canal d'alerte est Gmail, comme la livraison.
+**Écarts connus au cours** (choisis ou restants) : les Code nodes dépassent la cible d'environ 50 lignes (72 et 175 lignes) ; pas de DLQ rejouable (un journal seulement) ; pas de jeu de test à trois catégories sur n8n ; pas de workflow d'Evaluation ; 40 nodes là où le cours déconseille « des dizaines » (en tension avec la consigne « moins de workflows » ) ; le canal d'alerte est Gmail, comme la livraison.
 
 ## Les Data Tables
 
@@ -108,7 +108,7 @@ La base Notion « Analyses » a une propriété **`Decision`** (sélection : `in
 | `ignoré` | elle le rappelle et ne le recommande plus, sauf changement essentiel |
 | `désinstallé` | elle le traite comme absent et signale le motif comme une inconnue |
 
-Une décision s'applique à une analyse d'un **seul dépôt** (les pages de comparaison sont ignorées) ; s'il y en a plusieurs pour le même dépôt, la page **éditée en dernier** compte (modifier une ancienne page change donc la décision retenue). Pour garder l'état d'un outil à long terme, l'inventaire (`Etat`, `Presence`, `Version`) reste la référence. La réutilisation ne regarde ni les décisions ni le profil : après un changement, mets « Refaire l'analyse » sur Oui.
+Une décision s'applique à une analyse d'un **seul dépôt** (les anciennes pages de comparaison, avec plusieurs dépôts, sont ignorées) ; s'il y en a plusieurs pour le même dépôt, la page **éditée en dernier** compte (modifier une ancienne page change donc la décision retenue). Pour garder l'état d'un outil à long terme, l'inventaire (`Etat`, `Presence`, `Version`) reste la référence. La réutilisation ne regarde ni les décisions ni le profil : après un changement, mets « Refaire l'analyse » sur Oui.
 
 Un dépôt est relié à un outil de l'inventaire quand les **noms sont identiques** une fois normalisés (`huggingface/lerobot` et l'outil « LeRobot »). Un outil qui porte un autre nom reste visible de l'IA dans l'inventaire complet.
 
@@ -143,17 +143,17 @@ Le formulaire est alors à `https://<ton-n8n>/form/can-my-pc-run-it` (identifian
 
 ### Utilisation
 
-1. Ouvrir le formulaire, coller une URL GitHub par ligne (3 au plus : plusieurs dépôts = comparaison), ajouter l'objectif si besoin.
+1. Ouvrir le formulaire, coller l'URL d'**un** dépôt GitHub public, ajouter l'objectif si besoin.
 2. Quelques minutes plus tard : e-mail et page Notion (avec le JSON complet en bas).
-3. Une demande refusée (URL invalide, trop de dépôts) arrête l'exécution et t'envoie la raison par e-mail (gestionnaire d'erreurs, workflow publié). Un dépôt sans release stable est analysé sur sa branche par défaut, et le rapport le dit.
+3. Une demande refusée (URL invalide, plusieurs dépôts) arrête l'exécution et t'envoie la raison par e-mail (gestionnaire d'erreurs, workflow publié). Un dépôt sans release stable est analysé sur sa branche par défaut, et le rapport le dit.
 
 ## Coût, quotas et données personnelles
 
 - **Appels Gemini par exécution** : 1 en général ; au pire 4 (2 essais, chacun avec le modèle principal puis le modèle de secours). Une réutilisation n'en fait aucun.
-- **Taille d'un appel** (estimation à 4 caractères par token) : le prompt et le schéma font environ 27 000 caractères (7 000 tokens), auxquels s'ajoutent les preuves (README jusqu'à 9 000 caractères, 2 fichiers de dépendances jusqu'à 5 000, notes de release 3 000, 6 issues), le profil et l'inventaire ; en sortie, au plus `maxOutputTokens` (32 768) tokens. Un dépôt de plus ajoute ses preuves.
+- **Taille d'un appel** (estimation à 4 caractères par token) : le prompt et le schéma font environ 27 000 caractères (7 000 tokens), auxquels s'ajoutent les preuves (README jusqu'à 9 000 caractères, `pyproject.toml` jusqu'à 5 000, notes de release 3 000), le profil et l'inventaire ; en sortie, au plus `maxOutputTokens` (32 768) tokens.
 - **Prix** : non chiffré ici, il dépend de ton offre Gemini (la clé gratuite est limitée par des quotas, pas facturée). Les alias `-latest` peuvent changer de modèle sans prévenir : relire `CONFIGURATION` à chaque audit. Aucun plafond mensuel n'est appliqué (le garde-fou « budget mensuel » existait dans la variante à 157 nodes).
 - **Données envoyées à Gemini** : ton profil machine, l'inventaire (usages, retours, raisons d'abandon, incertitudes), tes décisions et les textes GitHub lus. Elles restent aussi dans les exécutions de n8n (`saveDataSuccessExecution: all`) : réduire ce réglage dans `Settings` si tu ne veux pas les conserver.
-- **Contenu hostile** : un README ou une issue peut tenter de pousser le modèle à écrire une image ou un lien piégé. Le code retire des textes de l'IA tout lien et toute image qui ne pointent pas vers les dépôts examinés ou vers tes décisions ([docs/PROMPTS.md](docs/PROMPTS.md)).
+- **Contenu hostile** : un README ou des notes de release peuvent tenter de pousser le modèle à écrire une image ou un lien piégé. Le code retire des textes de l'IA tout lien et toute image qui ne pointent pas vers le dépôt examiné ou vers tes décisions ([docs/PROMPTS.md](docs/PROMPTS.md)).
 
 ## Vérifier
 
@@ -223,7 +223,7 @@ Pour ceux-ci, les nodes GitHub étaient remplacés par des données de test (sau
 | Fichiers de dépendances (GitHub réel, envois simulés) : `pyproject.toml` de LeRobot lu au tag v0.6.1, `requirements.txt` absent sans erreur | l'IA compare `requires-python >=3.12`, `torch>=2.7,<2.12.0` et `numpy>=2.0.0,<2.3.0` avec ta pile installée (Python 3.12.15, PyTorch 2.11.0+cpu) et cite le fichier comme preuve ; dépendances « compatible » |
 | Décisions : propriété `Decision` lue en vrai dans Notion (7 pages, aucune décision), puis décision « ignoré » simulée sur LeRobot | la décision arrive dans les entrées de l'IA ; le rapport la cite (`decision-1`) et dit que le dépôt a été ignoré ; contrôles passés |
 | Même demande relancée | rapport retrouvé par sa clé, e-mail « rapport existant », aucun appel IA ni lecture Notion |
-| Comparaison de 2 dépôts | 2 passages de boucle, 2 rapports et une comparaison |
+| Comparaison de 2 dépôts (fonction retirée en version 3.1) | 2 passages de boucle, 2 rapports et une comparaison |
 | « Refaire l'analyse » = Oui | analyse refaite, la ligne existante est **mise à jour** (pas de doublon) |
 | Demande invalide (URL GitLab) | arrêt avec « Invalid request: Not an https GitHub repository URL… » |
 | Publication : workflow publié, « Error workflow » réglé sur lui-même, anciens workflows dépubliés | seul workflow actif ; formulaire de production : 401 sans identifiants (protégé), ancien formulaire : 404 |
@@ -235,17 +235,17 @@ Pour ceux-ci, les nodes GitHub étaient remplacés par des données de test (sau
 |---|---|
 | `n8ncli validate` / `n8ncli lint --fail-on-warnings` | `[VALID]` / `[LINT-PASS]`, 0 avertissement |
 | Validateur du skill n8n-pro-max | 0 erreur, 0 avertissement |
-| `npm test` | 18 tests passent : vérification des URL, correspondance outil/dépôt, version examinée (release ou branche), nettoyage avant le node XML, filtrage des liens et images de l'IA, validations qui restent strictes, filtre de réutilisation, Limit. Rejoués sur la version 3.0, 10 d'entre eux échouent, ce qui prouve qu'ils contrôlent bien les correctifs |
+| `npm test` | 22 tests passent : vérification de l'URL (un seul dépôt), correspondance outil/dépôt, version examinée (release ou branche), nettoyage avant le node XML, lecture de `pyproject.toml`, filtrage des liens et images de l'IA, validations qui restent strictes, clé de réutilisation identique à l'écriture et à la lecture, rendu du rapport, filtre de réutilisation, Limit, taille du workflow. Les 18 premiers tests, rejoués sur la version 3.0, en faisaient échouer 10 : ils contrôlent bien les correctifs |
 
-**Pas encore testé**, faute de l'avoir importée dans n8n : la version 3.1 entière sur l'instance (aucun appel GitHub, Notion, Gmail ou Gemini réel avec elle), la lecture d'un dépôt sans release sur GitHub réel, le plantage du node XML corrigé (prouvé sur la bibliothèque `xml2js`, pas sur le node n8n), l'Error Trigger en production, une vraie soumission du formulaire publié, une réponse IA invalide, une panne Notion et un lot de 3 dépôts.
+**Pas encore testé**, faute de l'avoir importée dans n8n : la version 3.1 entière sur l'instance (aucun appel GitHub, Notion, Gmail ou Gemini réel avec elle), la lecture d'un dépôt sans release sur GitHub réel, le plantage du node XML corrigé (prouvé sur la bibliothèque `xml2js`, pas sur le node n8n), l'Error Trigger en production, une vraie soumission du formulaire publié, une réponse IA invalide et une panne Notion.
 
 ## Limites connues
 
-- Sont lus : `README.md` (pas `README.rst` ni un autre nom : le rapport le signale), `pyproject.toml` et `requirements.txt` (s'ils existent, sinon rien), les notes de release et les issues sur l'installation. Ce que ces fichiers ne disent pas reste « inconnu » dans le rapport. Les dépôts qui déclarent leurs dépendances ailleurs (`package.json`, `environment.yml`…) ne sont pas couverts. Un README sans titres `#` ou `##` est coupé à environ 3 000 caractères.
+- Sont lus : `README.md` (pas `README.rst` ni un autre nom : le rapport le signale), `pyproject.toml` (s'il existe, sinon rien) et les notes de release. Ni les issues ni `requirements.txt` ne sont lues. Ce que ces fichiers ne disent pas reste « inconnu » dans le rapport. Les dépôts qui déclarent leurs dépendances ailleurs (`requirements.txt`, `package.json`, `environment.yml`…) ne sont pas couverts. Un README sans titres `#` ou `##` est coupé à environ 3 000 caractères.
 - Pas de recherche Web : les alternatives externes sont dans les inconnues.
-- Les décisions ne s'appliquent qu'aux analyses d'un seul dépôt ; une page de comparaison est ignorée.
+- Les décisions ne s'appliquent qu'aux analyses d'un seul dépôt ; une ancienne page de comparaison est ignorée.
 - Sans release stable (brouillons et pré-releases ignorés), la branche par défaut est examinée : le résultat peut changer au prochain push.
-- Sur plusieurs dépôts, une erreur GitHub sur l'un (404, limite de débit) arrête toute la demande avant l'analyse.
+- Un seul dépôt par demande : pour en comparer deux, lancer deux demandes et lire les deux rapports.
 - Gemini Flash peut mettre plus de 3 minutes sur un diagnostic long (le modèle de secours ne reprend la main qu'en cas d'erreur, pas de lenteur). Le workflow ne fixe aucun délai maximal : certaines offres n8n plafonnent la durée d'une exécution (180 s sur l'essai gratuit) et coupent alors un appel lent.
 - Le profil est lu en Markdown (Notion peut tronquer une page très longue) ; l'inventaire est donné en entier à l'IA, il doit rester court (une cinquantaine d'outils).
 - La réutilisation ignore les changements du profil Notion et des décisions : utiliser « Refaire l'analyse ».
@@ -257,7 +257,7 @@ Pour ceux-ci, les nodes GitHub étaient remplacés par des données de test (sau
 
 | Date | Version | Changement |
 |---|---|---|
-| 2026-10-23 | 3.1 | Revue hostile et correctifs : liens et images de l'IA filtrés, texte nettoyé avant le node XML, réutilisation limitée aux rapports livrés en entier, branche par défaut examinée sans release stable, correspondance outil/dépôt exacte, `env` et `limitItems` avec un Limit ; simplification (54 à 47 nodes) : JSON joint, modèle de réparation et création des tables retirés ; document de transfert, tests, plan SVG du canvas |
+| 2026-10-23 | 3.1 | Revue hostile et correctifs : liens et images de l'IA filtrés, texte nettoyé avant le node XML, réutilisation limitée aux rapports livrés en entier, branche par défaut examinée sans release stable, correspondance outil/dépôt exacte, `env` et `limitItems` avec un Limit ; simplification (54 à 40 nodes) : JSON joint, modèle de réparation, création des tables, boucle sur plusieurs dépôts avec comparaison, issues et `requirements.txt` retirés ; document de transfert, tests, plan SVG du canvas |
 | 2026-10-23 | 3.0 | Sept workflows fusionnés en un seul : nodes natifs d'abord, sticky notes, credentials renommés, alias Gemini *latest*, réutilisation par lien, décisions installé / ignoré / désinstallé lues par l'IA, Data Tables remplies par le workflow, `.workflow.ts` et lint n8n-cli |
 | 2026-10-21 | 2.0 | Première version en production, sept workflows |
 

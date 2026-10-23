@@ -106,7 +106,9 @@
       "e-mails",
       "fine-grained",
       "read-only",
-      "cross-checking"
+      "cross-checking",
+      "pyproject",
+      "toml"
     ],
     "errorMessage": "Text, names, and variables must be written in English."
   },

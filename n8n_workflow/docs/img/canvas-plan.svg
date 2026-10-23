@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2400" height="2213" viewBox="-1040 -340 5140 4740" font-family="Segoe UI, Roboto, Arial, sans-serif">
 <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b7280"/></marker></defs>
 <rect x="-1040" y="-340" width="5140" height="4740" fill="#ffffff"/>
-<rect x="-40" y="1450" width="3620" height="610" rx="14" fill="#e7e8ee" opacity="0.8"/>
-<text x="-16" y="1494" font-size="34" font-weight="700" fill="#374151">2. GitHub evidence, one repository at a time</text>
 <rect x="-40" y="450" width="1460" height="710" rx="14" fill="#e7e8ee" opacity="0.8"/>
 <text x="-16" y="494" font-size="34" font-weight="700" fill="#374151">1. Entry and request check</text>
+<rect x="-40" y="1450" width="2180" height="310" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="-16" y="1494" font-size="34" font-weight="700" fill="#374151">2. GitHub evidence</text>
 <rect x="-40" y="3050" width="1940" height="310" rx="14" fill="#e7e8ee" opacity="0.8"/>
 <text x="-16" y="3094" font-size="34" font-weight="700" fill="#374151">4. Personal context from Notion</text>
 <rect x="1880" y="3050" width="788" height="650" rx="14" fill="#e7e8ee" opacity="0.8"/>
@@ -32,7 +32,6 @@
 <path d="M1160 628.0 C580.0 628.0 580.0 1628.0 0 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M1160 628.0 C1180.0 628.0 1180.0 828.0 1200 828.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M200 1628.0 C220.0 1628.0 220.0 1628.0 240 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M440 1628.0 C340.0 1628.0 340.0 1928.0 240 1928.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M440 1628.0 C460.0 1628.0 460.0 1628.0 480 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M680 1628.0 C700.0 1628.0 700.0 1628.0 720 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M920 1628.0 C940.0 1628.0 940.0 1628.0 960 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
@@ -40,14 +39,7 @@
 <path d="M1400 1628.0 C1420.0 1628.0 1420.0 1628.0 1440 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M1640 1628.0 C1660.0 1628.0 1660.0 1628.0 1680 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M1880 1628.0 C1900.0 1628.0 1900.0 1628.0 1920 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M2120 1628.0 C2140.0 1628.0 2140.0 1628.0 2160 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M2360 1628.0 C2380.0 1628.0 2380.0 1628.0 2400 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M2600 1628.0 C2620.0 1628.0 2620.0 1628.0 2640 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M2840 1628.0 C2860.0 1628.0 2860.0 1628.0 2880 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M3080 1628.0 C3100.0 1628.0 3100.0 1628.0 3120 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M3320 1628.0 C3340.0 1628.0 3340.0 1628.0 3360 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M3560 1628.0 C1900.0 1628.0 1900.0 1628.0 240 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
-<path d="M440 1928.0 C340.0 1928.0 340.0 2428.0 240 2428.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2120 1628.0 C1180.0 1628.0 1180.0 2428.0 240 2428.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M440 2428.0 C460.0 2428.0 460.0 2428.0 480 2428.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M680 2428.0 C700.0 2428.0 700.0 2668.0 720 2668.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
 <path d="M680 2428.0 C340.0 2428.0 340.0 3228.0 0 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
@@ -92,53 +84,32 @@
 <text x="1300.0" y="823" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Stop and Error</text>
 <text x="1300.0" y="842" font-size="13" text-anchor="middle" fill="#4b5563">Invalid Request</text>
 <rect x="0" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="100.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Split Out</text>
-<text x="100.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Repositories</text>
+<text x="100.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="100.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Repository</text>
 <rect x="240" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="340.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Loop Over Items</text>
-<text x="340.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Repositories</text>
+<text x="340.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="340.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">List Releases</text>
 <rect x="480" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="580.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
-<text x="580.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Repository</text>
+<text x="580.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
+<text x="580.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Releases</text>
 <rect x="720" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="820.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
-<text x="820.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">List Releases</text>
+<text x="820.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="820.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Select Latest Release</text>
 <rect x="960" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="1060.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
-<text x="1060.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Releases</text>
+<text x="1060.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="1060.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get README</text>
 <rect x="1200" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="1300.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
-<text x="1300.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Select Latest Release</text>
+<text x="1300.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
+<text x="1300.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read README</text>
 <rect x="1440" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
 <text x="1540.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
-<text x="1540.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get README</text>
+<text x="1540.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Project File</text>
 <rect x="1680" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
 <text x="1780.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
-<text x="1780.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read README</text>
+<text x="1780.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read Project File</text>
 <rect x="1920" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="2020.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
-<text x="2020.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Project File</text>
-<rect x="2160" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="2260.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
-<text x="2260.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read Project File</text>
-<rect x="2400" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="2500.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
-<text x="2500.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Requirements File</text>
-<rect x="2640" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="2740.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
-<text x="2740.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read Requirements File</text>
-<rect x="2880" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="2980.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
-<text x="2980.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">List Issues</text>
-<rect x="3120" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="3220.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
-<text x="3220.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Issues</text>
-<rect x="3360" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="3460.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
-<text x="3460.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Assemble Repository Evidence</text>
-<rect x="240" y="1900" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
-<text x="340.0" y="1923" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
-<text x="340.0" y="1942" font-size="13" text-anchor="middle" fill="#4b5563">Repository Evidence</text>
+<text x="2020.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="2020.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Assemble Repository Evidence</text>
 <rect x="240" y="2400" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
 <text x="340.0" y="2423" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Data Table</text>
 <text x="340.0" y="2442" font-size="13" text-anchor="middle" fill="#4b5563">Find Existing Analysis</text>

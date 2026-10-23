@@ -31,15 +31,13 @@ def schema():
         "firstTrial": obj({"feasibleLocally": {"type": "boolean"}, "blockReason": nullable, "prerequisites": array(text), "steps": array(text), "expectedResult": text,
                            "durationMinutes": {"type": ["integer", "null"]}, "resources": text, "stop": text, "cleanup": text, "alternativeCheck": nullable}),
         "ratings": obj({k: rating for k in RATING_KEYS}),
-        "examinedScope": obj({"documents": array(text), "issues": array(text), "limits": text}),
+        "examinedScope": obj({"documents": array(text), "limits": text}),
         "unknowns": array(text),
     })
     return obj({
-        "recommendation": text, "reports": array(report),
-        "comparison": {"type": ["object", "null"], "properties": {"commonCriteria": array(obj({"criterion": text, "perRepository": array(obj({"repository": text, "assessment": text}))})),
-                                                                  "synthesis": text, "complementarity": text}},
+        "recommendation": text, "report": report,
         "usedContext": array(obj({"id": text, "usage": text})),
-        "sources": array(obj({"url": text, "type": enum("github", "issue", "web", "notion"), "usage": text})),
+        "sources": array(obj({"url": text, "type": enum("github", "web", "notion"), "usage": text})),
         "unknowns": array(text),
     })
 
@@ -60,7 +58,7 @@ def build(w):
     w.add("Gemini Chat - Fallback Model", *GEMINI_CHAT, chat_model("fallbackModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (9.4, r + 1.7), **cred("gemini"))
     w.add("Output Parser - Diagnostic Schema", *PARSER, {"schemaType": "manual", "inputSchema": json.dumps(schema(), ensure_ascii=False, indent=1), "autoFix": False}, (10.2, r + 1.7))
     w.add("Code - Validate and Finalize Diagnostic", *CODE, {"mode": "runOnceForAllItems", "jsCode": code("validate-diagnostic.js")}, (10, r),
-          note="Why Code: cross-checking nested arrays (repositories, ratings, cited context) and assembling the final JSON is not possible with standard nodes. Evidence from GitHub always overrides the AI.")
+          note="Why Code: cross-checking the nested report (ratings, cited context, links) and assembling the final JSON is not possible with standard nodes. Evidence from GitHub always overrides the AI.")
 
     w.link("Set - Gather Prompt Inputs", "XML - Convert Inputs")
     w.link("XML - Convert Inputs", "Basic LLM Chain - Write Diagnostic")

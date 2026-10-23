@@ -18,8 +18,8 @@ import s_evidence
 import s_notes
 
 NAME = "Can My PC Run It"
-DESCRIPTION = ("Diagnoses public GitHub repositories for a personal Windows 11 PC. Reads the latest stable release (or the default branch), the README, the dependency files and the issues "
-               "with native GitHub nodes, reuses an identical report when the repositories, versions and goal are the same, reads the personal context from Notion, "
+DESCRIPTION = ("Diagnoses a public GitHub repository for a personal Windows 11 PC. Reads the latest stable release (or the default branch), the README and pyproject.toml "
+               "with native GitHub nodes, reuses an identical report when the repository, version and goal are the same, reads the personal context from Notion, "
                "asks Gemini for a strict JSON diagnostic, then delivers a Notion page and an HTML e-mail. Two Data Tables keep the analysis history and the incidents.")
 
 

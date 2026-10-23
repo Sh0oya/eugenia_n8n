@@ -78,7 +78,6 @@ Le workflow y écrit ses rapports. Crée-la vide avec ces propriétés :
 | Nom | Titre | |
 | Statut | Sélection | `en attente`, `échec`, `terminé`, `historique`, `à réexaminer`, `repris`, `annulé` |
 | Diagnostic Id | Texte | |
-| Mode | Sélection | `un`, `plusieurs`, `comparer` |
 | Depots | Texte | |
 | Cle | Texte | |
 | Version | Texte | |

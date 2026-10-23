@@ -3,11 +3,11 @@ from lib import *
 
 CFG = "$('CONFIGURATION').first().json"
 REQ = "$('Set - Parse and Validate Request').first().json"
-EVIDENCE = "$('Aggregate - Repository Evidence').first().json.repositories"
+EVIDENCE = "$('Set - Assemble Repository Evidence').first().json"
 MD = "$('Notion - Get Profile').first().json.markdown"
 NORM = "(s => String(s || '').toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, ''))"
-# The key that identifies an analysis: the repositories with their version, and the goal.
-REUSE_KEY = "`${$json.repositories.map(r => `${r.key}@${r.tag}`).sort().join(' + ')} | ${" + REQ + ".goal.toLowerCase()}`"
+# The key that identifies an analysis: the repository with its version, and the goal.
+REUSE_KEY = "`${$json.key}@${$json.tag} | ${" + REQ + ".goal.toLowerCase()}`"
 
 
 def E(js):
@@ -22,14 +22,14 @@ def build(w):
     # ---------- reuse ----------
     r = 12
     w.add("Data Table - Find Existing Analysis", *TABLE, table_get("analysis_history", [("reuseKey", E(REUSE_KEY)), ("status", "done"), ("deliveryStatus", "complete")], limit=1), (1, r), alwaysOutputData=True,
-          note="Same repositories, same versions and same goal: the existing report is found by this key, without any AI call. Only a report delivered in full (Notion page created, nothing unreadable) is reused.")
+          note="Same repository, same version and same goal: the existing report is found by this key, without any AI call. Only a report delivered in full (Notion page created, nothing unreadable) is reused.")
     w.add("IF - Already Analyzed", *IF, {"conditions": conditions(cond(E(f"!!$json.requestId && !{REQ}.force"))), "options": {}}, (2, r))
     w.add("Gmail - Send Existing Report", *GMAIL, gmail_params(E("`Rapport existant - ${$json.repositoriesKey}`"), E(
-        "`<p>Ces dépôts ont déjà été analysés le <b>${DateTime.fromISO($json.updatedAt || $json.createdAt).setLocale('fr').toFormat('dd/LL/yyyy')}</b> avec les mêmes versions (${$json.versions}) et le même objectif. Aucune nouvelle analyse n’a été lancée.</p>"
+        "`<p>Ce dépôt a déjà été analysé le <b>${DateTime.fromISO($json.updatedAt || $json.createdAt).setLocale('fr').toFormat('dd/LL/yyyy')}</b> avec la même version (${$json.versions}) et le même objectif. Aucune nouvelle analyse n’a été lancée.</p>"
         "<p><b>TL;DR :</b> ${String($json.summary || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</p>"
         "<p>Rapport complet : <a href=\"${$json.notionUrl}\">${$json.notionUrl}</a></p><p>Pour refaire l’analyse, renvoyer le formulaire avec « Refaire l’analyse » sur Oui.</p>`")),
           (3, r + 1.2), **cred("gmail"), **RETRY)
-    w.link("Aggregate - Repository Evidence", "Data Table - Find Existing Analysis")
+    w.link("Set - Assemble Repository Evidence", "Data Table - Find Existing Analysis")
     w.link("Data Table - Find Existing Analysis", "IF - Already Analyzed")
     w.link("IF - Already Analyzed", "Gmail - Send Existing Report", 0)
     w.group("## 3. Reuse of an existing report\nThe analyses are compared by repository link and version, plus the goal. An identical request returns the existing report in seconds. The form option to redo the analysis skips this shortcut.",
@@ -65,15 +65,15 @@ def build(w):
           note="Test mode: when CONFIGURATION.env is not production, only the first few pages of the Analyses database are kept (item limit in CONFIGURATION). In production nothing is cut.")
     w.add("Aggregate - Decisions", *AGGREGATE, {"aggregate": "aggregateAllItemData", "destinationFieldName": "decisionPages", "options": {}}, (6, c))
     w.add("Set - Gather Prompt Inputs", *SET, fields(
-        ("request", "object", E(f"({{ id: {REQ}.requestId, mode: {EVIDENCE}.length > 1 ? 'compare' : 'single', goal: {REQ}.goal || 'none, judge from the profile', date: $now.toISODate(), receivedAt: {REQ}.receivedAt }})")),
+        ("request", "object", E(f"({{ id: {REQ}.requestId, goal: {REQ}.goal || 'none, judge from the profile', date: $now.toISODate(), receivedAt: {REQ}.receivedAt }})")),
         ("machine", "object", E(f"({block}).machine || {{}}")),
         ("profileRevision", "string", E(f"({block}).revision || ''")),
         ("profile", "array", E(f"String({MD} || '').replace(/```[\\s\\S]*?```/g, '').split(/\\n(?=#{{1,3}}\\s)/).map(s => s.trim()).filter(s => s.length > 20).map((s, i) => ({{ id: `profile-${{i + 1}}`, label: {CLEAN}(s.split('\\n')[0].replace(/^#+\\s*/, '').slice(0, 80)), text: {CLEAN}(s.slice(0, 3000)) }}))")),
         ("inventory", "array", E(inventory)),
         ("decisions", "array", E(decisions)),
-        ("matches", "array", E(f"(n => {EVIDENCE}.flatMap(r => {inventory}.filter(o => n(o.name) && (n(o.name) === n(r.key.split('/')[1]) || n(o.name) === n(r.key))).map(o => ({{ repository: r.key, tool: o.name, state: o.state, presence: o.presence, version: o.version, environment: o.environment }}))))({NORM})")),
-        ("repositories", "array", E(EVIDENCE)),
-        ("limits", "array", E(f"[...{EVIDENCE}.flatMap(r => r.limits || []),\n  (l => l.length ? `Inventory: tools without state or presence are treated as unknown: ${{l.join(', ')}}` : '')({inventory}.filter(o => !o.state || !o.presence).map(o => o.name)),\n"
+        ("matches", "array", E(f"(n => (r => {inventory}.filter(o => n(o.name) && (n(o.name) === n(r.key.split('/')[1]) || n(o.name) === n(r.key))).map(o => ({{ repository: r.key, tool: o.name, state: o.state, presence: o.presence, version: o.version, environment: o.environment }})))({EVIDENCE}))({NORM})")),
+        ("repository", "object", E(EVIDENCE)),
+        ("limits", "array", E(f"[...({EVIDENCE}.limits || []),\n  (l => l.length ? `Inventory: tools without state or presence are treated as unknown: ${{l.join(', ')}}` : '')({inventory}.filter(o => !o.state || !o.presence).map(o => o.name)),\n"
                               f"  !Object.keys(({block}).machine || {{}}).length ? 'The machine block is missing in the Notion profile' : ''].filter(Boolean)"))),
         (7, c), note="Everything the AI may use, in one item: the request, the machine, the profile, the inventory, the user decisions and the GitHub evidence. The XML node turns it into the inputs of the prompt.")
     w.link("IF - Already Analyzed", "Notion - Get Profile", 1)

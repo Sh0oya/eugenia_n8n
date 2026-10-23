@@ -13,7 +13,7 @@ Sections imposées par le cours (module « Livraison »). Le détail de mise en 
 | Projet n8n | Personal, dossier Sandbox |
 | Déclencheur | formulaire protégé par Basic Auth (`/form/can-my-pc-run-it`) ; l'Error Trigger fait du workflow son propre Error workflow |
 | Livrable | 1 page dans la base Notion « Analyses », 1 e-mail HTML, 1 ligne dans `analysis_history` |
-| Volume attendu | usage manuel et ponctuel, une demande à la fois, 3 dépôts au plus (hypothèse à confirmer par Mathieu : moins de 20 demandes par mois) |
+| Volume attendu | usage manuel et ponctuel, une demande à la fois, un dépôt par demande (hypothèse à confirmer par Mathieu : moins de 20 demandes par mois) |
 | Coût par exécution | voir « Coût et quotas » du README (jusqu'à 4 appels Gemini ; aucun budget mensuel automatique) |
 
 ## Dépendances et credentials
@@ -34,7 +34,7 @@ Data Tables n8n : `analysis_history` et `error_incidents` (colonnes dans le READ
 
 - Toute exécution en erreur déclenche le bloc 7 : une ligne dans `error_incidents` et un e-mail « Échec - … » à l'adresse de `CONFIGURATION.notificationEmail`, avec le lien de l'exécution.
 - Canal d'alerte : **Gmail, le même que celui de la livraison**. Si le credential Gmail tombe, aucune alerte ne part : regarder la liste des exécutions de n8n et `error_incidents`.
-- Une demande invalide (URL refusée, trop de dépôts) est aussi une exécution en erreur, donc un e-mail avec la raison.
+- Une demande invalide (URL refusée, plusieurs dépôts) est aussi une exécution en erreur, donc un e-mail avec la raison.
 - Réglage à faire une fois : `Settings` → `Error workflow` → choisir ce même workflow (possible seulement après la première publication).
 - Audit tous les 3 à 6 mois (prochain : avant le 23/04/2027), noté dans la sticky « Journal des Revues » du canvas : nodes obsolètes, modèles `latest`, prompt, credentials à renouveler.
 

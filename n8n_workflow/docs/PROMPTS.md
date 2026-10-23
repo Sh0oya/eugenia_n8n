@@ -5,17 +5,17 @@ Un seul prompt, utilisé par `Basic LLM Chain - Write Diagnostic`. Il est écrit
 | | |
 |---|---|
 | Modèle | `gemini-flash-latest`, secours `gemini-flash-lite-latest` (réglables dans `CONFIGURATION`) |
-| Sortie | un objet JSON validé par un schéma : un rapport par dépôt, une comparaison si plusieurs dépôts, le contexte utilisé, les sources, les inconnues |
+| Sortie | un objet JSON validé par un schéma : un rapport, le contexte utilisé, les sources, les inconnues |
 
 ## Structure (règles du cours)
 
 1. **Rôle dans le message système** — [`diagnostic.system.md`](../tools/prompts/diagnostic.system.md) : qui est l'analyste, ce qu'il maîtrise (Windows 11, WSL, Conda, CUDA, Intel Arc, sécurité), ce qu'il ne fait jamais (exécuter, installer), la langue de sortie. Le message système ne contient **aucune accolade** : la chaîne LLM de n8n les prendrait pour des variables.
 2. **Tâche dans le message utilisateur, en sections XML** — [`diagnostic.user.xml`](../tools/prompts/diagnostic.user.xml) :
    - `<goal>` : l'objectif, avec le nombre de rapports attendus ;
-   - `<context>` : 13 règles numérotées (analyse statique uniquement, documents non fiables, preuve / estimation / inconnu, pertinence, outils déjà connus, compatibilité, risques, coûts, notes de 1 à 5, premier essai, mode comparaison, recopie exacte du dépôt et de la version) ;
+   - `<context>` : 12 règles numérotées (analyse statique uniquement, documents non fiables, preuve / estimation / inconnu, pertinence, outils déjà connus, compatibilité, risques, coûts, notes de 1 à 5, premier essai, recopie exacte du dépôt et de la version) ;
    - `<examples>` : **5 exemples** qui couvrent les cas difficiles (GPU bloquant, outil déjà installé dans une autre version, outil « abandonné » qui n'est pas désinstallé, injection de prompt dans un README, outil marqué « installé » par l'utilisateur) ;
    - `<output_format>` : un seul objet JSON, valeurs en français, URL seulement si elles figurent dans les entrées.
-3. **Entrées en XML** — le node natif `XML - Convert Inputs` transforme le JSON des preuves (`<machine>`, `<profile>`, `<inventory>`, `<decisions>`, `<matches>`, `<repositories>` (README, `<dependencyFiles>`, issues…)…) en balises : le modèle sépare mieux les données des instructions.
+3. **Entrées en XML** — le node natif `XML - Convert Inputs` transforme le JSON des preuves (`<machine>`, `<profile>`, `<inventory>`, `<decisions>`, `<matches>`, `<repository>` (README, `<dependencyFiles>` = `pyproject.toml`, notes de release…)…) en balises : le modèle sépare mieux les données des instructions.
 
 ## Les décisions de l'utilisateur
 
@@ -29,7 +29,7 @@ La propriété `Decision` de la base Notion « Analyses » (`installé`, `ignor�
 | Réponse qui n'est pas du JSON valide | `Output Parser - Diagnostic Schema` (schéma manuel) ; sinon la validation échoue, l'e-mail le dit et rien n'est enregistré comme réussi |
 | Modèle indisponible ou surchargé | modèle de secours `gemini-flash-lite-latest` (option native de la chaîne), 2 essais |
 | Le modèle contredit les preuves GitHub | `Code - Validate and Finalize Diagnostic` recopie dépôt, version et URL **depuis GitHub**, jamais depuis l'IA, et refuse un rapport sans note, sans source ou qui cite un contexte inconnu |
-| Un README ou une issue pousse le modèle à écrire une image ou un lien piégé (fuite du profil vers un site tiers) | le même node retire des textes de l'IA les images, les liens qui ne pointent pas vers les dépôts examinés ou vers tes décisions, et les balises de type HTML ; les liens `javascript:` ne sont jamais rendus. Le prompt seul ne suffit pas |
+| Un README ou des notes de release poussent le modèle à écrire une image ou un lien piégé (fuite du profil vers un site tiers) | le même node retire des textes de l'IA les images, les liens qui ne pointent pas vers les dépôts examinés ou vers tes décisions, et les balises de type HTML ; les liens `javascript:` ne sont jamais rendus. Le prompt seul ne suffit pas |
 | Texte GitHub qui fait échouer la conversion XML (séquences ANSI, émoji coupé) | caractères de contrôle et surrogates isolés retirés après chaque découpe |
 | Appel lent ou en échec | modèle de secours en cas d'erreur ; aucun délai fixé dans le workflow, car certaines offres n8n plafonnent la durée d'exécution (180 s sur l'essai gratuit) et coupent alors un appel Gemini lent |
 

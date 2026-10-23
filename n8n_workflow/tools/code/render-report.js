@@ -30,7 +30,7 @@ const DIMENSIONS = [['windows', 'Windows 11'], ['wsl', 'WSL Ubuntu'], ['cpu', 'C
 const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
 
 const failed = d.status !== 'done';
-const title = `${d.mode === 'compare' ? 'Comparaison' : 'Analyse'} — ${d.repositories.map(x => x.repository).join(' + ')}`;
+const title = `Analyse — ${d.repository.repository}`;
 const overall = r => {
   const verdicts = DIMENSIONS.map(([k]) => r.compatibility?.[k]?.verdict);
   if (verdicts.includes('blocking') || r.firstTrial?.feasibleLocally === false) return ['Bloquant sur ce PC', 'red'];
@@ -65,15 +65,15 @@ const markdownReport = r => {
   if (e.stop || e.cleanup) trial.push(`Arrêt : ${one(e.stop || '?')} — nettoyage : ${one(e.cleanup || '?')}`);
   parts.push(...trial);
   parts.push('### Notes', bullets(Object.entries(RATINGS), ([k, label]) => { const n = r.ratings?.[k] || {}; return n.value == null ? `${label} : non évalué — ${n.unratedReason || 'raison non fournie'}` : `${stars(n.value)} ${label} (${n.value}/5, confiance ${fr(n.confidence)}) — ${n.justification}`; }));
-  parts.push('### Périmètre consulté et inconnues', bullets([...list(s.documents).map(x => `Document : ${x}`), ...list(s.issues).map(x => `Issue : ${x}`), ...(s.limits ? [`Limites : ${s.limits}`] : []), ...list(r.unknowns).map(x => `Inconnue : ${x}`)], x => x));
+  parts.push('### Périmètre consulté et inconnues', bullets([...list(s.documents).map(x => `Document : ${x}`), ...(s.limits ? [`Limites : ${s.limits}`] : []), ...list(r.unknowns).map(x => `Inconnue : ${x}`)], x => x));
   return parts.filter(Boolean).join('\n\n');
 };
 const traceLines = () => {
   const t = d.trace || {};
   return [
     `Diagnostic ${d.id} — schéma ${d.schemaVersion} — ${String(d.date).slice(0, 16).replace('T', ' ')} — statut **${d.status}**`,
-    `Mode : ${d.mode}${d.goal ? ` — objectif : ${d.goal}` : ' — sans objectif explicite (pertinence jugée sur le profil)'}`,
-    ...d.repositories.map(x => `${x.repository} : ${x.version}${x.releaseUrl ? ` (${x.releaseUrl})` : ''}`),
+    d.goal ? `Objectif : ${d.goal}` : 'Sans objectif explicite (pertinence jugée sur le profil)',
+    `${d.repository.repository} : ${d.repository.version}${d.repository.releaseUrl ? ` (${d.repository.releaseUrl})` : ' (branche par défaut, pas de release stable)'}`,
     `Moteur : ${t.model} — durée ${t.durationSeconds} s`,
     `Contexte fourni : ${t.context?.profileSections} sections du profil, ${t.context?.inventoryItems} outils de l’inventaire et ${t.context?.decisions ?? 0} décisions`,
     ...list(d.usedProfile?.passages).map(p => `Contexte utilisé : ${p.label}${p.type === 'fictional' ? ' (FICTIF)' : ''} — ${p.usage}`),
@@ -82,11 +82,7 @@ const traceLines = () => {
     ...list(d.unknowns).map(u => `Inconnue : ${u}`),
   ];
 };
-const markdownComparison = d.comparison ? ['## Comparaison',
-  bullets(list(d.comparison.commonCriteria), x => `**${x.criterion}** — ${list(x.perRepository).map(p => `${p.repository} : ${p.assessment}`).join(' ; ')}`),
-  d.comparison.synthesis ? `**Synthèse** : ${one(d.comparison.synthesis)}` : '',
-  d.comparison.complementarity ? `**Complémentarité** : ${one(d.comparison.complementarity)}` : ''].filter(Boolean).join('\n\n') : '';
-const markdown = [`# ${title}`, `**${one(failed ? `Le diagnostic automatique a échoué : ${list(d.unknowns)[0] || 'cause inconnue'}` : d.recommendation)}**`, ...d.reports.map(markdownReport), markdownComparison, '## Traçabilité', bullets(traceLines(), x => x)].filter(Boolean).join('\n\n');
+const markdown = [`# ${title}`, `**${one(failed ? `Le diagnostic automatique a échoué : ${list(d.unknowns)[0] || 'cause inconnue'}` : d.recommendation)}**`, d.report ? markdownReport(d.report) : '', '## Traçabilité', bullets(traceLines(), x => x)].filter(Boolean).join('\n\n');
 
 // ---------- HTML (e-mail) ----------
 const heading = t => `<tr><td style="padding:22px 28px 6px"><div style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6b7280">${esc(t)}</div></td></tr>`;
@@ -130,19 +126,12 @@ const card = r => {
   return rows.join('');
 };
 
-const comparisonHtml = d.comparison ? [
-  '<tr><td style="padding:26px 28px 6px;border-top:6px solid #f3f4f6"><div style="font-size:20px;font-weight:700;color:#111827">Comparaison</div></td></tr>',
-  `<tr><td style="padding:6px 28px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:13px"><tr><td style="padding:8px;background:#f3f4f6;font-weight:700;color:#374151">Critère</td>${d.repositories.map(x => `<td style="padding:8px;background:#f3f4f6;font-weight:700;color:#374151">${esc(x.repository)}</td>`).join('')}</tr>
-    ${list(d.comparison.commonCriteria).map(cr => `<tr><td style="padding:8px;border-bottom:1px solid #f3f4f6;font-weight:600;vertical-align:top;color:#111827">${esc(cr.criterion)}</td>${d.repositories.map(x => `<td style="padding:8px;border-bottom:1px solid #f3f4f6;vertical-align:top;line-height:1.45;color:#374151">${esc((list(cr.perRepository).find(p => String(p.repository).toLowerCase() === x.repository) || {}).assessment || '—')}</td>`).join('')}</tr>`).join('')}</table></td></tr>`,
-  d.comparison.synthesis ? block(`<b>Synthèse :</b> ${esc(d.comparison.synthesis)}`) : '',
-  d.comparison.complementarity ? block(`<b>Complémentarité :</b> ${esc(d.comparison.complementarity)}`) : '',
-].join('') : '';
-
 const trace = d.trace || {};
+const summary = failed ? list(d.unknowns)[0] || '' : `${d.repository.repository} : ${d.report.tldr.recommendation}`;
 const date = DateTime.fromISO(d.date).setZone('Europe/Paris').setLocale('fr').toFormat('d LLLL yyyy à HH:mm');
 const emailHtml = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title></head>
 <body style="margin:0;padding:0;background:#eef0f4;color:#111827">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc((failed ? list(d.unknowns)[0] : d.reports.map(r => `${r.repository} : ${r.tldr.recommendation}`).join(' · ')).slice(0, 180))}</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(summary.slice(0, 180))}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef0f4"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#ffffff;color:#111827;border-radius:14px;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
   <tr><td style="background:#111827;padding:26px 28px"><div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#a5b4fc">Ça tourne sur mon PC ?</div>
@@ -150,10 +139,9 @@ const emailHtml = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><m
     <div style="margin-top:6px;font-size:13px;color:#9ca3af">${esc(date)} · ${d.goal ? `objectif : ${esc(d.goal)}` : 'jugé d’après ton profil'}</div></td></tr>
   <tr><td style="padding:22px 28px 6px"><div style="border-left:4px solid ${failed ? '#dc2626' : '#4f46e5'};background:${failed ? '#fef2f2' : '#eef2ff'};border-radius:8px;padding:14px 16px;font-size:15px;line-height:1.55;color:#111827">${esc(failed ? list(d.unknowns)[0] : d.recommendation)}</div></td></tr>
   <tr><td style="padding:12px 28px 4px">__NOTION_BLOCK__</td></tr>
-  ${d.reports.map(card).join('')}
-  ${comparisonHtml}
+  ${d.report ? card(d.report) : ''}
   <tr><td style="padding:24px 28px;border-top:6px solid #f3f4f6;background:#fafafa;font-size:12px;line-height:1.6;color:#6b7280"><b style="color:#374151">Traçabilité</b><br>
-    ${esc(d.id)} · schéma ${esc(d.schemaVersion)} · ${d.repositories.map(x => `${esc(x.repository)}@${esc(x.version)}`).join(', ')}<br>
+    ${esc(d.id)} · schéma ${esc(d.schemaVersion)} · ${esc(d.repository.repository)}@${esc(d.repository.version)}<br>
     ${esc(trace.model)} · ${esc(trace.durationSeconds)} s · ${esc(trace.context?.profileSections)} sections de profil, ${esc(trace.context?.inventoryItems)} outils et ${esc(trace.context?.decisions ?? 0)} décisions fournis<br>
     ${list(d.usedProfile?.passages).length ? `Contexte utilisé : ${d.usedProfile.passages.map(p => esc(p.label)).join(', ')}<br>` : ''}
     ${list(d.examinationLimits).length ? `Limites : ${d.examinationLimits.map(esc).join(' · ')}<br>` : ''}
@@ -165,8 +153,8 @@ const jsonText = JSON.stringify(d, null, 2);
 return [{ json: {
   diagnostic: d,
   title,
-  subject: `${failed ? 'Échec du diagnostic' : 'Diagnostic'} — ${d.repositories.map(x => x.repository).join(' + ')}`,
-  tldr: (failed ? `Échec : ${list(d.unknowns)[0] || ''}` : d.reports.map(r => `${r.repository} : ${r.tldr.recommendation}`).join(' | ')).slice(0, 1990),
+  subject: `${failed ? 'Échec du diagnostic' : 'Diagnostic'} — ${d.repository.repository}`,
+  tldr: (failed ? `Échec : ${summary}` : summary).slice(0, 1990),
   markdown,
   markdownForNotion: `${markdown}\n\n## JSON du diagnostic (schéma ${d.schemaVersion})\n\n\`\`\`json\n${jsonText}\n\`\`\``,
   emailHtml,

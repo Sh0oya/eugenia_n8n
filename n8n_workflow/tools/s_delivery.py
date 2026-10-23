@@ -4,10 +4,9 @@ from lib import *
 R = "$('Code - Render Report').first().json"
 D = f"{R}.diagnostic"
 NOTION_PAGE = "$('Notion - Create Diagnostic Page').first().json"
-REPOSITORIES_KEY = f"{D}.repositories.map(r => r.repository).sort().join(' + ')"
-VERSIONS = f"{D}.repositories.map(r => `${{r.repository}}@${{r.version}}`).join(' + ')"
+REPOSITORY_KEY = f"{D}.repository.repository"
+VERSIONS = f"`${{{D}.repository.repository}}@${{{D}.repository.version}}`"
 CONTEXT_IDS = f"({D}.usedProfile.passages || []).map(p => p.id).join(',')"
-REQUEST_MODE = f"({{ single: 'un', compare: 'comparer' }})[{D}.mode]"
 
 
 def E(js):
@@ -21,8 +20,7 @@ def build(w):
     properties = [
         notion_property("Statut", "select", E(f"{D}.status === 'done' ? 'terminé' : 'échec'")),
         notion_property("Diagnostic Id", "rich_text", E(f"{D}.id")),
-        notion_property("Mode", "select", E(REQUEST_MODE)),
-        notion_property("Depots", "rich_text", E(REPOSITORIES_KEY)),
+        notion_property("Depots", "rich_text", E(REPOSITORY_KEY)),
         notion_property("Cle", "rich_text", E(f"{D}.trace.reuseKey")),
         notion_property("Version", "rich_text", E(VERSIONS)),
         notion_property("TLDR", "rich_text", E("$json.tldr")),
@@ -37,13 +35,13 @@ def build(w):
     w.add("Gmail - Send Report", *GMAIL, gmail_params(E(f"{R}.subject"), E(f"{R}.emailHtml.replace('__NOTION_BLOCK__', () => (u => u ? {link} : {missing})({NOTION_PAGE}.url))")),
           (15, d), **cred("gmail"), **RETRY, note="The e-mail carries the full report and, when the Notion page exists, the link to it.")
     w.add("Data Table - Save Analysis", *TABLE, table_upsert("analysis_history", [("reuseKey", E(f"{D}.trace.reuseKey")), ("status", E(f"{D}.status"))], {
-        "requestId": E(f"{D}.id"), "status": E(f"{D}.status"), "repositoriesKey": E(REPOSITORIES_KEY), "versions": E(VERSIONS),
+        "requestId": E(f"{D}.id"), "status": E(f"{D}.status"), "repositoriesKey": E(REPOSITORY_KEY), "versions": E(VERSIONS),
         "reuseKey": E(f"{D}.trace.reuseKey"), "goal": E(f"{D}.goal || ''"), "summary": E(f"{R}.tldr"),
         "notionPageId": E(f"{NOTION_PAGE}.id || ''"), "notionUrl": E(f"{NOTION_PAGE}.url || ''"), "model": E(f"{D}.trace.model"),
         "deliveryStatus": E(f"!{NOTION_PAGE}.url ? 'notion failed' : ({D}.examinationLimits || []).some(l => /could not be read \\(/.test(l)) ? 'degraded' : 'complete'"),
         "contextIds": E(CONTEXT_IDS),
         "note": E(f"{D}.status === 'done' ? '' : ({D}.unknowns || []).join(' ; ').slice(0, 900)")}), (16, d),
-        note="History of every analysis. One row per repositories, versions and goal, and per status: a failed run never overwrites a finished report. Only a report whose delivery is complete is reused.")
+        note="History of every analysis. One row per repository, version and goal, and per status: a failed run never overwrites a finished report. Only a report whose delivery is complete is reused.")
     w.link("Code - Validate and Finalize Diagnostic", "Code - Render Report")
     w.chain("Code - Render Report", "Notion - Create Diagnostic Page", "Gmail - Send Report", "Data Table - Save Analysis")
     w.group("## 6. Delivery and history\nThe report is rendered once, written to Notion and sent as an HTML e-mail. The analysis is then saved in the analysis_history Data Table, which is also what the reuse shortcut reads.",

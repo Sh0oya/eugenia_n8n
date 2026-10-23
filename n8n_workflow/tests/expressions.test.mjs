@@ -4,36 +4,41 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { evaluate, field, node, workflow } from './harness.mjs';
 
-const CONFIGURATION = { maxRepositories: 3, notionProfilePageId: 'p', notionInventoryDataSourceId: 'i', notionAnalysesDataSourceId: 'a', maxReadmeChars: 9000, maxDependencyChars: 5000 };
+const CONFIGURATION = { notionProfilePageId: 'p', notionInventoryDataSourceId: 'i', notionAnalysesDataSourceId: 'a', maxReadmeChars: 9000, maxDependencyChars: 5000 };
 
-const parse = (githubUrls, name) => evaluate(field('Set - Parse and Validate Request', name), { json: { githubUrls }, nodes: { CONFIGURATION } });
+const parse = (githubUrl, name) => evaluate(field('Set - Parse and Validate Request', name), { json: { githubUrl }, nodes: { CONFIGURATION } });
 
-test('request check accepts repository links, with .git, a slash or a path', () => {
-  const urls = 'https://github.com/huggingface/lerobot https://github.com/o/r.git https://github.com/o/my.repo/ https://github.com/o/r/issues/3';
-  assert.deepEqual(parse(urls, 'repositories').map(r => r.key), ['huggingface/lerobot', 'o/r', 'o/my.repo']);
-  assert.deepEqual(parse(urls, 'errors'), []);
+test('request check accepts a repository link, with .git, a slash or a path', () => {
+  for (const [url, key] of [['https://github.com/huggingface/lerobot', 'huggingface/lerobot'], ['https://github.com/o/r.git', 'o/r'], ['https://github.com/o/my.repo/', 'o/my.repo'], ['https://github.com/o/r/issues/3', 'o/r']]) {
+    assert.equal(parse(url, 'repository').key, key, url);
+    assert.deepEqual(parse(url, 'errors'), [], url);
+  }
+  assert.equal(parse('https://github.com/Hugging/LeRobot', 'repository').url, 'https://github.com/Hugging/LeRobot');
 });
 
 test('request check refuses GitHub pages that are not repositories, a name ending with a dot and other hosts', () => {
   for (const bad of ['https://github.com/orgs/acme', 'https://github.com/users/someone', 'https://github.com/a/b.', 'https://gitlab.com/a/b', 'http://github.com/a/b', 'github.com/a/b']) {
-    assert.equal(parse(bad, 'repositories').length, 0, bad);
+    assert.deepEqual(parse(bad, 'repository'), {}, bad);
     assert.match(parse(bad, 'errors')[0], /Not an https GitHub repository URL/, bad);
   }
 });
 
-test('request check limits the number of repositories and refuses an empty request', () => {
-  assert.match(parse('https://github.com/a/a https://github.com/b/b https://github.com/c/c https://github.com/d/d', 'errors').join(), /Too many repositories/);
+test('request check refuses an empty request and more than one repository', () => {
   assert.match(parse('', 'errors').join(), /No GitHub URL given/);
+  assert.match(parse('https://github.com/a/a https://github.com/b/b', 'errors').join(), /One repository per request \(2 links given\)/);
+  assert.deepEqual(parse('https://github.com/a/a, https://github.com/b/b', 'repository'), {});
 });
 
 const inventory = ['LeRobot', 'n8n', 'Git', 'Python'].map((name, i) => ({ id: `inv-${i}`, name, state: 'installed', presence: 'present', version: '1' }));
-const matchesFor = keys => evaluate(field('Set - Gather Prompt Inputs', 'matches'), {
-  nodes: { 'Aggregate - Repository Evidence': { repositories: keys.map(key => ({ key })) }, 'Aggregate - Inventory': { inventory } },
+const matchesFor = key => evaluate(field('Set - Gather Prompt Inputs', 'matches'), {
+  nodes: { 'Set - Assemble Repository Evidence': { key }, 'Aggregate - Inventory': { inventory } },
 }).map(m => `${m.repository}=${m.tool}`);
 
 test('a repository matches an inventory tool only when the names are equal', () => {
-  assert.deepEqual(matchesFor(['huggingface/lerobot', 'n8n-io/n8n', 'git/git']), ['huggingface/lerobot=LeRobot', 'n8n-io/n8n=n8n', 'git/git=Git']);
-  assert.deepEqual(matchesFor(['go-gitea/gitea', 'someone/digital-twin', 'n8n-io/n8n-cli', 'x/lerobot-sim-extras', 'x/pythonista']), []);
+  assert.deepEqual(matchesFor('huggingface/lerobot'), ['huggingface/lerobot=LeRobot']);
+  assert.deepEqual(matchesFor('n8n-io/n8n'), ['n8n-io/n8n=n8n']);
+  assert.deepEqual(matchesFor('git/git'), ['git/git=Git']);
+  for (const key of ['go-gitea/gitea', 'someone/digital-twin', 'n8n-io/n8n-cli', 'x/lerobot-sim-extras', 'x/pythonista']) assert.deepEqual(matchesFor(key), [], key);
 });
 
 const select = (releases, repo) => name => evaluate(field('Set - Select Latest Release', name), { json: { releases }, nodes: { 'GitHub - Get Repository': repo } });
@@ -64,41 +69,35 @@ test('control characters and a cut emoji are removed from the text sent to the X
   assert.doesNotThrow(() => new Builder({ rootName: 'inputs', headless: true }).buildObject({ notes }));
 });
 
-const evidence = (error, extra = {}) => evaluate(field('Set - Assemble Repository Evidence', 'limits'), {
-  json: { issues: [] },
-  nodes: {
-    CONFIGURATION,
-    'Set - Select Latest Release': { repository: { key: 'o/r' }, tag: 'v1', ref: 'v1', releaseUrl: 'u' },
-    'Extract from File - Read README': { content: 'readme' },
-    'GitHub - Get Project File': error ? { error } : {}, 'GitHub - Get Requirements File': {}, ...extra,
-  },
-});
+const SELECTED = { repository: { key: 'o/r', url: 'https://github.com/o/r' }, tag: 'v1', ref: 'v1', releaseUrl: 'u' };
+const evidence = (name, nodes) => evaluate(field('Set - Assemble Repository Evidence', name), { json: {}, nodes: { CONFIGURATION, 'Set - Select Latest Release': SELECTED, 'Extract from File - Read README': { content: 'readme' }, 'GitHub - Get Project File': {}, 'Extract from File - Read Project File': {}, ...nodes } });
 
 test('a missing dependency file is normal, any other error is a stated limit', () => {
-  assert.deepEqual(evidence(''), []);
-  assert.deepEqual(evidence('The resource you are requesting could not be found'), []);
-  assert.match(evidence('API rate limit exceeded').join(), /o\/r: pyproject\.toml could not be read \(API rate limit exceeded\)/);
+  assert.deepEqual(evidence('limits', {}), []);
+  assert.deepEqual(evidence('limits', { 'GitHub - Get Project File': { error: 'The resource you are requesting could not be found' } }), []);
+  assert.match(evidence('limits', { 'GitHub - Get Project File': { error: 'API rate limit exceeded' } }).join(), /o\/r: pyproject\.toml could not be read \(API rate limit exceeded\)/);
 });
 
 test('a repository without stable release says it in the limits', () => {
-  const limits = evaluate(field('Set - Assemble Repository Evidence', 'limits'), {
-    json: { issues: [] },
-    nodes: { CONFIGURATION, 'Set - Select Latest Release': { repository: { key: 'o/r' }, tag: 'main (2026-10-20)', ref: 'main', releaseUrl: '' },
-      'Extract from File - Read README': { content: 'readme' }, 'GitHub - Get Project File': {}, 'GitHub - Get Requirements File': {} },
-  });
+  const limits = evidence('limits', { 'Set - Select Latest Release': { ...SELECTED, tag: 'main (2026-10-20)', ref: 'main', releaseUrl: '' } });
   assert.match(limits.join(), /no stable release published, the default branch was examined \(main \(2026-10-20\)\)/);
 });
 
-const savedStatus = (notionUrl, limits) => {
-  const expression = node('Data Table - Save Analysis').parameters.columns.value.deliveryStatus;
-  return evaluate(expression, { nodes: { 'Code - Render Report': { diagnostic: { examinationLimits: limits } }, 'Notion - Create Diagnostic Page': notionUrl ? { url: notionUrl } : { error: 'x' } } });
-};
+test('pyproject.toml is given without comment lines and capped, or not at all', () => {
+  const files = evidence('dependencyFiles', { CONFIGURATION: { ...CONFIGURATION, maxDependencyChars: 30 }, 'Extract from File - Read Project File': { content: '# comment\n[project]\nrequires-python = ">=3.12"\ndependencies = ["torch>=2.7"]\n' } });
+  assert.deepEqual(files.map(f => [f.path, f.url]), [['pyproject.toml', 'https://github.com/o/r/blob/v1/pyproject.toml']]);
+  assert.equal(files[0].text, '[project]\nrequires-python = ">=3.12"'.slice(0, 30));
+  assert.deepEqual(evidence('dependencyFiles', {}), []);
+});
+
+const status = (notionUrl, limits) => evaluate(node('Data Table - Save Analysis').parameters.columns.value.deliveryStatus,
+  { nodes: { 'Code - Render Report': { diagnostic: { examinationLimits: limits } }, 'Notion - Create Diagnostic Page': notionUrl ? { url: notionUrl } : { error: 'x' } } });
 
 test('only a report with a Notion page and no unreadable file is marked complete', () => {
-  assert.equal(savedStatus('https://notion.so/p', []), 'complete');
-  assert.equal(savedStatus('https://notion.so/p', ['o/r: README.md could not be read at the examined version (README.rst and other names are not read)']), 'complete');
-  assert.equal(savedStatus('https://notion.so/p', ['o/r: pyproject.toml could not be read (API rate limit exceeded)']), 'degraded');
-  assert.equal(savedStatus('', []), 'notion failed');
+  assert.equal(status('https://notion.so/p', []), 'complete');
+  assert.equal(status('https://notion.so/p', ['o/r: README.md could not be read at the examined version (README.rst and other names are not read)']), 'complete');
+  assert.equal(status('https://notion.so/p', ['o/r: pyproject.toml could not be read (API rate limit exceeded)']), 'degraded');
+  assert.equal(status('', []), 'notion failed');
 });
 
 test('the lookup of an existing analysis only returns reports that were fully delivered', () => {
@@ -107,13 +106,15 @@ test('the lookup of an existing analysis only returns reports that were fully de
 });
 
 test('the Limit node cuts only outside production', () => {
-  const maxItems = field => evaluate(node('Limit - Analyses Pages').parameters.maxItems, { nodes: { CONFIGURATION: field } });
+  const maxItems = config => evaluate(node('Limit - Analyses Pages').parameters.maxItems, { nodes: { CONFIGURATION: config } });
   assert.equal(maxItems({ env: 'production', limitItems: 3 }), 999999);
   assert.equal(maxItems({ env: 'test', limitItems: 3 }), 3);
 });
 
-test('the workflow keeps the native-nodes rule: no HTTP Request, two Code nodes', () => {
-  const types = workflow.nodes.map(n => n.type);
-  assert.equal(types.filter(t => t === 'n8n-nodes-base.httpRequest').length, 0);
-  assert.equal(types.filter(t => t === 'n8n-nodes-base.code').length, 2);
+test('the workflow stays small and native: 40 nodes, no HTTP Request, two Code nodes, one repository per request', () => {
+  const nodes = workflow.nodes.filter(n => !n.type.endsWith('stickyNote'));
+  assert.equal(nodes.length, 40);
+  assert.equal(nodes.filter(n => n.type === 'n8n-nodes-base.httpRequest').length, 0);
+  assert.equal(nodes.filter(n => n.type === 'n8n-nodes-base.code').length, 2);
+  assert.equal(nodes.filter(n => /Loop|Split Out|Issues|Requirements/.test(n.name)).length, 0);
 });
