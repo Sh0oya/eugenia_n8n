@@ -4,7 +4,6 @@ const d = $input.first().json.diagnostic;
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const list = v => (Array.isArray(v) ? v : v ? [v] : []);
-const short = sha => String(sha || '').slice(0, 7);
 const one = s => String(s ?? '').replace(/\s*\n\s*/g, ' ').trim();
 const link = (url, text) => `<a href="${esc(url)}" style="color:#4f46e5;text-decoration:none">${esc(text)}</a>`;
 
@@ -44,7 +43,7 @@ const overall = r => {
 const bullets = (items, render) => items.map(x => `- ${one(render(x))}`).join('\n');
 const markdownReport = r => {
   const t = r.tldr || {}, ea = r.existingAndAlternatives || {}, c = r.compatibility || {}, e = r.firstTrial || {}, s = r.examinedScope || {};
-  const parts = [`## ${r.repository} @ ${r.version} (commit ${short(r.commit)})`];
+  const parts = [`## ${r.repository} @ ${r.version}`];
   parts.push('### TL;DR', bullets([`**Recommandation** : ${t.recommendation}`, `**Intérêt principal** : ${t.mainBenefit}`, `**Limite principale** : ${t.mainLimit}`, `**Prochaine étape** : ${t.nextStep}`], x => x));
   parts.push('### Utilité', one(r.usefulness));
   parts.push('### Existant et alternatives', bullets([
@@ -74,14 +73,13 @@ const traceLines = () => {
   return [
     `Diagnostic ${d.id} — schéma ${d.schemaVersion} — ${String(d.date).slice(0, 16).replace('T', ' ')} — statut **${d.status}**`,
     `Mode : ${d.mode}${d.goal ? ` — objectif : ${d.goal}` : ' — sans objectif explicite (pertinence jugée sur le profil)'}`,
-    ...d.repositories.map(x => `${x.repository} : ${x.version} (commit ${short(x.commit)})${x.manualReference ? ' — référence choisie manuellement' : ''}`),
-    `Moteur : ${t.model} — coût estimé ${t.estimatedCostEur} € — durée ${t.durationSeconds} s`,
-    `Contexte retrouvé : ${t.rag?.method} — ${t.rag?.passages} passages fournis ; recherche Web : ${t.webSearch?.enabled ? `faite (${t.webSearch.sources} sources)` : 'non faite'}`,
+    ...d.repositories.map(x => `${x.repository} : ${x.version}${x.releaseUrl ? ` (${x.releaseUrl})` : ''}`),
+    `Moteur : ${t.model} — durée ${t.durationSeconds} s`,
+    `Contexte fourni : ${t.context?.profileSections} sections du profil et ${t.context?.inventoryItems} outils de l’inventaire`,
     ...list(d.usedProfile?.passages).map(p => `Contexte utilisé : ${p.label}${p.type === 'fictional' ? ' (FICTIF)' : ''} — ${p.usage}`),
     ...list(d.sources).map(s => `Source : ${s.url} — ${s.usage || s.type || ''}`),
     ...list(d.examinationLimits).map(l => `Limite : ${l}`),
     ...list(d.unknowns).map(u => `Inconnue : ${u}`),
-    ...(d.previousAnalysisUrl ? [`Remplace l’analyse : ${d.previousAnalysisUrl}`] : []),
   ];
 };
 const markdownComparison = d.comparison ? ['## Comparaison',
@@ -102,7 +100,7 @@ const card = r => {
   const rows = [];
   rows.push(`<tr><td style="padding:24px 28px 14px;border-top:6px solid #f3f4f6"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
     <td style="font-size:20px;font-weight:700;color:#111827">${link(r.url || `https://github.com/${r.repository}`, r.repository)}</td><td align="right">${pill(label, tone)}</td></tr></table>
-    <div style="margin-top:4px;font-size:13px;color:#6b7280">version <b style="color:#374151">${esc(r.version)}</b> · commit <code style="font-family:Consolas,Menlo,monospace;background:#f3f4f6;padding:1px 5px;border-radius:4px">${short(r.commit)}</code>${r.manualReference ? ' · référence choisie manuellement' : ''}</div></td></tr>`);
+    <div style="margin-top:4px;font-size:13px;color:#6b7280">version <b style="color:#374151">${esc(r.version)}</b></div></td></tr>`);
   rows.push(`<tr><td style="padding:0 28px 6px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border-radius:10px">${[['Recommandation', t.recommendation], ['Intérêt principal', t.mainBenefit], ['Limite principale', t.mainLimit], ['Prochaine étape', t.nextStep]]
     .map(([k, v], i) => `<tr><td style="padding:${i ? 4 : 12}px 14px ${i === 3 ? 12 : 4}px;width:140px;vertical-align:top;font-size:13px;font-weight:600;color:#6b7280">${k}</td><td style="padding:${i ? 4 : 12}px 14px ${i === 3 ? 12 : 4}px;font-size:14px;line-height:1.5;color:#111827">${esc(v)}</td></tr>`).join('')}</table></td></tr>`);
   rows.push(heading('Utilité'), block(esc(r.usefulness)));
@@ -155,8 +153,8 @@ const emailHtml = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><m
   ${d.reports.map(card).join('')}
   ${comparisonHtml}
   <tr><td style="padding:24px 28px;border-top:6px solid #f3f4f6;background:#fafafa;font-size:12px;line-height:1.6;color:#6b7280"><b style="color:#374151">Traçabilité</b><br>
-    ${esc(d.id)} · schéma ${esc(d.schemaVersion)} · ${d.repositories.map(x => `${esc(x.repository)}@${esc(x.version)} (${short(x.commit)})`).join(', ')}<br>
-    ${esc(trace.model)} · ${esc(trace.durationSeconds)} s · coût estimé ${esc(trace.estimatedCostEur)} € · contexte ${esc(trace.rag?.method)}<br>
+    ${esc(d.id)} · schéma ${esc(d.schemaVersion)} · ${d.repositories.map(x => `${esc(x.repository)}@${esc(x.version)}`).join(', ')}<br>
+    ${esc(trace.model)} · ${esc(trace.durationSeconds)} s · ${esc(trace.context?.profileSections)} sections de profil et ${esc(trace.context?.inventoryItems)} outils fournis<br>
     ${list(d.usedProfile?.passages).length ? `Contexte utilisé : ${d.usedProfile.passages.map(p => esc(p.label)).join(', ')}<br>` : ''}
     ${list(d.examinationLimits).length ? `Limites : ${d.examinationLimits.map(esc).join(' · ')}<br>` : ''}
     ${list(d.sources).length ? `Sources : ${d.sources.map((s, i) => link(s.url, `[${i + 1}]`)).join(' ')}<br>` : ''}<br>
@@ -164,12 +162,7 @@ const emailHtml = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><m
 </table></td></tr></table></body></html>`;
 
 const jsonText = JSON.stringify(d, null, 2);
-// A replayed delivery brings the queue row and the Notion page that already exists: they are handed on unchanged.
-const input = $input.first().json;
 return [{ json: {
-  replayRowId: input.replayRowId || null,
-  existingPageId: input.existingPageId || '',
-  existingPageUrl: input.existingPageUrl || '',
   diagnostic: d,
   title,
   subject: `${failed ? 'Échec du diagnostic' : 'Diagnostic'} — ${d.repositories.map(x => x.repository).join(' + ')}`,
