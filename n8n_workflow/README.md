@@ -18,7 +18,13 @@
 |---|---|
 | ![E-mail : recommandation](docs/img/email-top.jpg) | ![E-mail : carte d'un dépôt](docs/img/email-card.jpg) |
 
-*Exemple de rapport de la v2 : le rendu est le même, sans la puce du commit (plus utilisée). Il sera remplacé par un rapport de cette version après le test réel.*
+*Rapport réel du test du 23 octobre 2026 (`huggingface/lerobot`, version v0.6.1).*
+
+La page créée dans la base « Analyses » de Notion :
+
+![Page Notion : propriétés](docs/img/notion-page-properties.png)
+
+![Page Notion : rapport](docs/img/notion-page-report.png)
 
 Le workflow dans n8n, vu d'ensemble :
 
@@ -66,7 +72,7 @@ flowchart LR
 |---|---|
 | Sticky notes | 13 : fiche de specs (bleu), à faire (jaune), aide humaine (violet), idées (vert), journal des revues (gris), un sticky gris par bloc. Code couleur du cours imposé par [`n8n-standards.json`](n8n/config/n8n-standards.json) |
 | Credentials renommés | `Google Gemini - Free Tier`, `Gmail - Mathieu`, `Notion - Eugenia Workspace`, `Basic Auth - Diagnostic Form`, `GitHub - Public Repositories Read` |
-| Workflow propre | noms « Outil - Action » en Title Case anglais, variables en camelCase, un seul `CONFIGURATION`, 7 blocs, notes sur les nodes importants, délai maximal d'exécution |
+| Workflow propre | noms « Outil - Action » en Title Case anglais, variables en camelCase, un seul `CONFIGURATION`, 7 blocs, notes sur les nodes importants |
 | Nodes natifs d'abord | GitHub, Notion, Gmail, Data Table, Loop Over Items, Switch, XML, Convert to File, Extract from File, chaîne LLM Gemini avec parseur et modèle de secours. **Aucun HTTP Request.** Seuls 2 Code nodes, justifiés dans leur note : rendu du rapport (Markdown + HTML depuis le même JSON) et contrôle du diagnostic |
 | Modèles IA « latest » | `gemini-flash-latest` et `gemini-flash-lite-latest`, modifiables dans `CONFIGURATION` |
 | Moins de workflows | 1 workflow, 48 nodes (la v2 en comptait 7 et environ 150) |
@@ -161,14 +167,27 @@ Pour produire une version prête à déployer sur ton instance (credentials et i
 
 ## Tests effectués (23 octobre 2026, instance n8n cloud 2.44.5, workflow non publié)
 
-Le credential GitHub n'existait pas encore : les 4 nodes GitHub ont été **remplacés par des données de test** dans ces essais, les envois Gmail et la création de la page Notion étaient **simulés**. Restent réels : les lectures Notion (profil et inventaire), les appels Gemini et les écritures dans les Data Tables.
+### Test réel de bout en bout : `huggingface/lerobot`
+
+GitHub, Notion, Gmail et Gemini réels : 1 e-mail et 1 page Notion créés.
+
+| Étape | Résultat |
+|---|---|
+| Preuves GitHub (4 nodes natifs) | dernière release stable v0.6.1 parmi 11 releases, licence Apache-2.0, README lu à ce tag (réduit à l'introduction et à « Quick Start »), 40 issues lues dont aucune sur l'installation |
+| Réutilisation | aucune analyse existante pour cette clé : l'analyse continue |
+| Contexte Notion | 5 sections de profil et 10 outils lus ; LeRobot relié au dépôt |
+| Diagnostic IA | le modèle principal a répondu « service indisponible », le modèle de secours a pris le relais ; JSON valide du premier coup, contrôles passés, statut « terminé » ; conclusion : garder LeRobot 0.6.2 et ne pas rétrograder, GPU Intel Arc « partiel » (pas de CUDA) |
+| Livraison | 1 page dans « Analyses » (statut « terminé », propriétés remplies), 1 e-mail HTML avec le JSON joint (10,2 ko), 1 ligne `done` dans `analysis_history` |
+
+### Essais complémentaires
+
+Pour ceux-ci, les 4 nodes GitHub étaient remplacés par des données de test et les envois Gmail et la création Notion par des simulations ; les lectures Notion, les appels Gemini et les écritures dans les Data Tables étaient réels.
 
 | Test | Résultat |
 |---|---|
 | `n8ncli validate` | `[VALID]` |
 | `n8ncli lint --fail-on-warnings` | `[LINT-PASS]`, 0 avertissement |
 | Validateur du skill n8n-pro-max | 0 erreur, 0 avertissement |
-| Parcours complet, 1 dépôt | diagnostic « terminé » du premier coup (JSON valide, contrôles passés, contexte Notion réel : 5 sections de profil, 10 outils) ; le modèle principal a répondu « service indisponible », le modèle de secours a pris le relais ; ligne ajoutée dans `analysis_history` |
 | Même demande relancée | rapport retrouvé par sa clé, e-mail « rapport existant », aucun appel IA ni lecture Notion |
 | Comparaison de 2 dépôts | 2 passages de boucle, 2 rapports et une comparaison |
 | « Refaire l'analyse » = Oui | analyse refaite, la ligne existante est **mise à jour** (pas de doublon) |
@@ -176,13 +195,14 @@ Le credential GitHub n'existait pas encore : les 4 nodes GitHub ont été **remp
 | Gestionnaire d'erreurs | incident journalisé dans `error_incidents`, alerte construite |
 | `Manual - Setup Data Tables` | les 2 tables sont créées (ou reconnues si elles existent) |
 
-**Pas encore testé** : les nodes GitHub natifs avec un vrai credential, une vraie page Notion et un vrai e-mail avec cette version, le cas « aucune release stable » (arrêt avec la raison), l'Error Trigger en production.
+**Pas encore testé** : le cas « aucune release stable » (arrêt avec la raison), l'Error Trigger en production, le formulaire une fois le workflow publié, et le dernier réglage du prompt (consigne de ne jamais écrire d'identifiant dans les textes, ajoutée après le test réel).
 
 ## Limites connues
 
 - Seul le README est lu, avec les notes de release et les issues sur l'installation : ce que le README ne dit pas reste « inconnu » dans le rapport.
 - Pas de recherche Web : les alternatives externes sont dans les inconnues.
 - Un dépôt sans release stable (brouillons et pré-releases ignorés) arrête l'exécution avec la raison.
+- Gemini Flash peut mettre plus de 3 minutes sur un diagnostic long (le modèle de secours reprend la main en cas d'erreur). Le workflow ne fixe aucun délai maximal : certaines offres n8n plafonnent la durée d'une exécution (180 s sur l'essai gratuit utilisé ici) et coupent alors un appel lent.
 - Le profil est lu en Markdown (Notion peut tronquer une page très longue) ; l'inventaire est donné en entier à l'IA, il doit rester court (une cinquantaine d'outils).
 - La réutilisation ignore les changements du profil Notion : utiliser « Refaire l'analyse ».
 - `Error workflow` : n8n n'autorise ce réglage qu'après la première publication.

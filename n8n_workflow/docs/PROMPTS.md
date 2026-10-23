@@ -25,7 +25,7 @@ Un seul prompt, utilisé par `Basic LLM Chain - Write Diagnostic`. Il est écrit
 | Réponse qui n'est pas du JSON valide | `Output Parser - Diagnostic Schema` (schéma manuel) + réparation automatique par un second modèle |
 | Modèle indisponible ou surchargé | modèle de secours `gemini-flash-lite-latest` (option native de la chaîne), 2 essais |
 | Le modèle contredit les preuves GitHub | `Code - Validate and Finalize Diagnostic` recopie dépôt, version et URL **depuis GitHub**, jamais depuis l'IA, et refuse un rapport sans note, sans source ou qui cite un contexte inconnu |
-| Appel bloqué | délai maximal d'exécution du workflow (15 minutes), puis alerte du gestionnaire d'erreurs |
+| Appel lent ou en échec | modèle de secours en cas d'erreur ; aucun délai fixé dans le workflow, car certaines offres n8n plafonnent la durée d'exécution (180 s sur l'essai gratuit) et coupent alors un appel Gemini lent |
 
 ## Modifier le prompt
 
