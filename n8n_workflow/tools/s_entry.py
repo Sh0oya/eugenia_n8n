@@ -56,6 +56,7 @@ def build(w):
         ("maxOutputTokens", "number", 32768),
         ("maxRepositories", "number", 3),
         ("maxReadmeChars", "number", 9000),
+        ("maxDependencyChars", "number", 5000),
         ("maxIssues", "number", 6),
         ("schemaVersion", "string", "3.0"),
         keep=True), (1, 4), note="Single place for every setting: e-mail, Notion identifiers, Gemini models and limits.")
