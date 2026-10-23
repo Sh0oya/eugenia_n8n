@@ -1,0 +1,13 @@
+{
+  "email": "you@example.com",
+  "notionProfilePageId": "00000000-0000-0000-0000-000000000000",
+  "notionInventoryDataSourceId": "00000000-0000-0000-0000-000000000000",
+  "notionAnalysesDataSourceId": "00000000-0000-0000-0000-000000000000",
+  "credentials": {
+    "gemini": {"type": "googlePalmApi", "id": "credential-id", "name": "Google Gemini - Free Tier"},
+    "gmail": {"type": "gmailOAuth2", "id": "credential-id", "name": "Gmail - Mathieu"},
+    "notion": {"type": "notionOAuth2Api", "id": "credential-id", "name": "Notion - Eugenia Workspace"},
+    "basic": {"type": "httpBasicAuth", "id": "credential-id", "name": "Basic Auth - Diagnostic Form"},
+    "github": {"type": "githubApi", "id": "credential-id", "name": "GitHub - Public Repositories Read"}
+  }
+}

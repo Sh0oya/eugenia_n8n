@@ -43,9 +43,10 @@ def prompt(file_name):
 
 def cred(kind):
     """Credential reference for a node (empty in the portable profile)."""
-    if PROFILE != "instance":
+    known = LOCAL.get("credentials", {}).get(kind)
+    if PROFILE != "instance" or not known:
         return {}
-    return {"credentials": {LOCAL["credentials"][kind]["type"]: {"id": LOCAL["credentials"][kind]["id"], "name": LOCAL["credentials"][kind]["name"]}}}
+    return {"credentials": {known["type"]: {"id": known["id"], "name": known["name"]}}}
 
 
 def local(key, placeholder):
