@@ -1,4 +1,4 @@
-# Skills Claude — Eugenia / N8N
+# Skills Claude
 
 Trois skills Claude Code, en français, qui se complètent et fonctionnent aussi
 chacun seul.
@@ -25,5 +25,5 @@ standard de Python 3.9 ou plus.
 
 Chaque skill a ses cas de test dans `evals/`, au format de
 `claude plugin eval`. Le mot de passe présent dans
-`hostile-review/evals/session-longue-hallucinations/files/relances/config.py`
+`skills/hostile-review/evals/session-longue-hallucinations/files/relances/config.py`
 est **faux** : c'est l'un des défauts plantés que la revue doit trouver.
