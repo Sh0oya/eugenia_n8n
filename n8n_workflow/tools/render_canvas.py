@@ -42,7 +42,8 @@ def main():
     x0, y0 = min(xs) - 40, min(ys) - 40
     x1 = max([s["position"][0] + s["parameters"]["width"] for s in stickies] + [n["position"][0] + W for n in nodes.values()]) + 40
     y1 = max([s["position"][1] + s["parameters"]["height"] for s in stickies] + [n["position"][1] + H for n in nodes.values()]) + 40
-    out = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x0} {y0} {x1 - x0} {y1 - y0}" font-family="Segoe UI, Roboto, Arial, sans-serif">',
+    width = 2400   # explicit size: without it GitHub draws the image as a 300 px thumbnail
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{round(width * (y1 - y0) / (x1 - x0))}" viewBox="{x0} {y0} {x1 - x0} {y1 - y0}" font-family="Segoe UI, Roboto, Arial, sans-serif">',
            '<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b7280"/></marker></defs>',
            f'<rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}" fill="#ffffff"/>']
     for s in sorted(stickies, key=lambda s: -s["parameters"]["width"] * s["parameters"]["height"]):

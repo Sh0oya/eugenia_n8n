@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1040 -340 5140 4740" font-family="Segoe UI, Roboto, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="2213" viewBox="-1040 -340 5140 4740" font-family="Segoe UI, Roboto, Arial, sans-serif">
 <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b7280"/></marker></defs>
 <rect x="-1040" y="-340" width="5140" height="4740" fill="#ffffff"/>
 <rect x="-40" y="1450" width="3620" height="610" rx="14" fill="#e7e8ee" opacity="0.8"/>
