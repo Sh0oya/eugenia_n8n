@@ -40,7 +40,7 @@ Contenu dans cet ordre, **sans tableau, sans bloc repliable et sans bloc imbriqu
 }
 ```
 
-   Complète ou corrige les valeurs avec ce que tu sais de ma machine. `revision` est la date du jour : je la changerai à chaque modification importante du matériel ou des objectifs (cela déclenche le réexamen des rapports).
+   Complète ou corrige les valeurs avec ce que tu sais de ma machine. `revision` est la date du jour : je la changerai à chaque modification importante du matériel ou des objectifs (elle est inscrite dans le rapport ; pour refaire une analyse déjà faite, je mettrai « Refaire l'analyse » sur Oui dans le formulaire).
 
 2. Puis ces sections de titre 2, chacune avec des puces courtes (provenance + date + incertitude) :
    - `## Activités`

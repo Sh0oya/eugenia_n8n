@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1040 -340 5140 4740" font-family="Segoe UI, Roboto, Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b7280"/></marker></defs>
+<rect x="-1040" y="-340" width="5140" height="4740" fill="#ffffff"/>
+<rect x="-40" y="1450" width="3620" height="610" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="-16" y="1494" font-size="34" font-weight="700" fill="#374151">2. GitHub evidence, one repository at a time</text>
+<rect x="-40" y="450" width="1460" height="710" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="-16" y="494" font-size="34" font-weight="700" fill="#374151">1. Entry and request check</text>
+<rect x="-40" y="3050" width="1940" height="310" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="-16" y="3094" font-size="34" font-weight="700" fill="#374151">4. Personal context from Notion</text>
+<rect x="1880" y="3050" width="788" height="650" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="1904" y="3094" font-size="34" font-weight="700" fill="#374151">5. AI diagnostic</text>
+<rect x="-1000" y="-300" width="860" height="560" rx="14" fill="#c8defa" opacity="0.8"/>
+<text x="-976" y="-256" font-size="34" font-weight="700" fill="#374151">Can My PC Run It</text>
+<rect x="200" y="2250" width="740" height="550" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="224" y="2294" font-size="34" font-weight="700" fill="#374151">3. Reuse of an existing report</text>
+<rect x="3080" y="3050" width="980" height="310" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="3104" y="3094" font-size="34" font-weight="700" fill="#374151">6. Delivery and history</text>
+<rect x="-1000" y="570" width="860" height="330" rx="14" fill="#e1d3f7" opacity="0.8"/>
+<text x="-976" y="614" font-size="34" font-weight="700" fill="#374151">Before the first run (human help)</text>
+<rect x="-40" y="4050" width="740" height="310" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="-16" y="4094" font-size="34" font-weight="700" fill="#374151">7. Error handler</text>
+<rect x="-1000" y="290" width="860" height="250" rx="14" fill="#e7e8ee" opacity="0.8"/>
+<text x="-976" y="334" font-size="34" font-weight="700" fill="#374151">Journal des Revues</text>
+<rect x="-1000" y="930" width="860" height="230" rx="14" fill="#c9ecc9" opacity="0.8"/>
+<text x="-976" y="974" font-size="34" font-weight="700" fill="#374151">Ideas for later</text>
+<path d="M200 628.0 C220.0 628.0 220.0 828.0 240 828.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M200 1028.0 C220.0 1028.0 220.0 828.0 240 828.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 828.0 C460.0 828.0 460.0 828.0 480 828.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M680 828.0 C700.0 828.0 700.0 628.0 720 628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M680 828.0 C340.0 828.0 340.0 4228.0 0 4228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M920 628.0 C940.0 628.0 940.0 628.0 960 628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1160 628.0 C580.0 628.0 580.0 1628.0 0 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1160 628.0 C1180.0 628.0 1180.0 828.0 1200 828.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M200 1628.0 C220.0 1628.0 220.0 1628.0 240 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 1628.0 C340.0 1628.0 340.0 1928.0 240 1928.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 1628.0 C460.0 1628.0 460.0 1628.0 480 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M680 1628.0 C700.0 1628.0 700.0 1628.0 720 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M920 1628.0 C940.0 1628.0 940.0 1628.0 960 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1160 1628.0 C1180.0 1628.0 1180.0 1628.0 1200 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1400 1628.0 C1420.0 1628.0 1420.0 1628.0 1440 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1640 1628.0 C1660.0 1628.0 1660.0 1628.0 1680 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1880 1628.0 C1900.0 1628.0 1900.0 1628.0 1920 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2120 1628.0 C2140.0 1628.0 2140.0 1628.0 2160 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2360 1628.0 C2380.0 1628.0 2380.0 1628.0 2400 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2600 1628.0 C2620.0 1628.0 2620.0 1628.0 2640 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2840 1628.0 C2860.0 1628.0 2860.0 1628.0 2880 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M3080 1628.0 C3100.0 1628.0 3100.0 1628.0 3120 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M3320 1628.0 C3340.0 1628.0 3340.0 1628.0 3360 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M3560 1628.0 C1900.0 1628.0 1900.0 1628.0 240 1628.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 1928.0 C340.0 1928.0 340.0 2428.0 240 2428.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 2428.0 C460.0 2428.0 460.0 2428.0 480 2428.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M680 2428.0 C700.0 2428.0 700.0 2668.0 720 2668.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M680 2428.0 C340.0 2428.0 340.0 3228.0 0 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M200 3228.0 C220.0 3228.0 220.0 3228.0 240 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 3228.0 C460.0 3228.0 460.0 3228.0 480 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M680 3228.0 C700.0 3228.0 700.0 3228.0 720 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M920 3228.0 C940.0 3228.0 940.0 3228.0 960 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1160 3228.0 C1180.0 3228.0 1180.0 3228.0 1200 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1400 3228.0 C1420.0 3228.0 1420.0 3228.0 1440 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1640 3228.0 C1660.0 3228.0 1660.0 3228.0 1680 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1880 3228.0 C1900.0 3228.0 1900.0 3228.0 1920 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2120 3228.0 C2140.0 3228.0 2140.0 3228.0 2160 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2360 3228.0 C2380.0 3228.0 2380.0 3228.0 2400 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2360 3228.0 C2380.0 3228.0 2380.0 3228.0 2400 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2164.0 3540 L2260.0 3256" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2356.0 3540 L2260.0 3256" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2548.0 3540 L2260.0 3256" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M2600 3228.0 C2860.0 3228.0 2860.0 3228.0 3120 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M3320 3228.0 C3340.0 3228.0 3340.0 3228.0 3360 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M3560 3228.0 C3580.0 3228.0 3580.0 3228.0 3600 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M3800 3228.0 C3820.0 3228.0 3820.0 3228.0 3840 3228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M200 4228.0 C220.0 4228.0 220.0 4228.0 240 4228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M440 4228.0 C460.0 4228.0 460.0 4228.0 480 4228.0" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="0" y="600" width="200" height="56" rx="10" fill="#ffffff" stroke="#16a34a" stroke-width="3"/>
+<text x="100.0" y="623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Form</text>
+<text x="100.0" y="642" font-size="13" text-anchor="middle" fill="#4b5563">Diagnostic Request</text>
+<rect x="0" y="1000" width="200" height="56" rx="10" fill="#ffffff" stroke="#16a34a" stroke-width="3"/>
+<text x="100.0" y="1023" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Error Trigger</text>
+<text x="100.0" y="1042" font-size="13" text-anchor="middle" fill="#4b5563">Workflow Failed</text>
+<rect x="240" y="800" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="340.0" y="823" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">CONFIGURATION</text>
+<rect x="480" y="800" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="580.0" y="823" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Switch</text>
+<text x="580.0" y="842" font-size="13" text-anchor="middle" fill="#4b5563">Route by Trigger</text>
+<rect x="720" y="600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="820.0" y="623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="820.0" y="642" font-size="13" text-anchor="middle" fill="#4b5563">Parse and Validate Request</text>
+<rect x="960" y="600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1060.0" y="623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">IF</text>
+<text x="1060.0" y="642" font-size="13" text-anchor="middle" fill="#4b5563">Request Valid</text>
+<rect x="1200" y="800" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1300.0" y="823" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Stop and Error</text>
+<text x="1300.0" y="842" font-size="13" text-anchor="middle" fill="#4b5563">Invalid Request</text>
+<rect x="0" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="100.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Split Out</text>
+<text x="100.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Repositories</text>
+<rect x="240" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="340.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Loop Over Items</text>
+<text x="340.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Repositories</text>
+<rect x="480" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="580.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="580.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Repository</text>
+<rect x="720" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="820.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="820.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">List Releases</text>
+<rect x="960" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1060.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
+<text x="1060.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Releases</text>
+<rect x="1200" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1300.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="1300.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Select Latest Release</text>
+<rect x="1440" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1540.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="1540.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get README</text>
+<rect x="1680" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1780.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
+<text x="1780.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read README</text>
+<rect x="1920" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="2020.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="2020.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Project File</text>
+<rect x="2160" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="2260.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
+<text x="2260.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read Project File</text>
+<rect x="2400" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="2500.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="2500.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Get Requirements File</text>
+<rect x="2640" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="2740.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Extract from File</text>
+<text x="2740.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Read Requirements File</text>
+<rect x="2880" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="2980.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">GitHub</text>
+<text x="2980.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">List Issues</text>
+<rect x="3120" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="3220.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
+<text x="3220.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Issues</text>
+<rect x="3360" y="1600" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="3460.0" y="1623" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="3460.0" y="1642" font-size="13" text-anchor="middle" fill="#4b5563">Assemble Repository Evidence</text>
+<rect x="240" y="1900" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="340.0" y="1923" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
+<text x="340.0" y="1942" font-size="13" text-anchor="middle" fill="#4b5563">Repository Evidence</text>
+<rect x="240" y="2400" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="340.0" y="2423" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Data Table</text>
+<text x="340.0" y="2442" font-size="13" text-anchor="middle" fill="#4b5563">Find Existing Analysis</text>
+<rect x="480" y="2400" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="580.0" y="2423" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">IF</text>
+<text x="580.0" y="2442" font-size="13" text-anchor="middle" fill="#4b5563">Already Analyzed</text>
+<rect x="720" y="2640" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="820.0" y="2663" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Gmail</text>
+<text x="820.0" y="2682" font-size="13" text-anchor="middle" fill="#4b5563">Send Existing Report</text>
+<rect x="0" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="100.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Notion</text>
+<text x="100.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Get Profile</text>
+<rect x="240" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="340.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Notion</text>
+<text x="340.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Get Inventory</text>
+<rect x="480" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="580.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="580.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Format Inventory Items</text>
+<rect x="720" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="820.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
+<text x="820.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Inventory</text>
+<rect x="960" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1060.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Notion</text>
+<text x="1060.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Get Decisions</text>
+<rect x="1200" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1300.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Limit</text>
+<text x="1300.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Analyses Pages</text>
+<rect x="1440" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1540.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Aggregate</text>
+<text x="1540.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Decisions</text>
+<rect x="1680" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="1780.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="1780.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Gather Prompt Inputs</text>
+<rect x="1920" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="2020.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">XML</text>
+<text x="2020.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Convert Inputs</text>
+<rect x="2160" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="3"/>
+<text x="2260.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Basic LLM Chain</text>
+<text x="2260.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Write Diagnostic</text>
+<rect x="2064" y="3540" width="200" height="56" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="3"/>
+<text x="2164.0" y="3563" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Gemini Chat</text>
+<text x="2164.0" y="3582" font-size="13" text-anchor="middle" fill="#4b5563">Main Model</text>
+<rect x="2256" y="3540" width="200" height="56" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="3"/>
+<text x="2356.0" y="3563" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Gemini Chat</text>
+<text x="2356.0" y="3582" font-size="13" text-anchor="middle" fill="#4b5563">Fallback Model</text>
+<rect x="2448" y="3540" width="200" height="56" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="3"/>
+<text x="2548.0" y="3563" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Output Parser</text>
+<text x="2548.0" y="3582" font-size="13" text-anchor="middle" fill="#4b5563">Diagnostic Schema</text>
+<rect x="2400" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="3"/>
+<text x="2500.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Code</text>
+<text x="2500.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Validate and Finalize Diagnostic</text>
+<rect x="3120" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="3"/>
+<text x="3220.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Code</text>
+<text x="3220.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Render Report</text>
+<rect x="3360" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="3460.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Notion</text>
+<text x="3460.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Create Diagnostic Page</text>
+<rect x="3600" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="3700.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Gmail</text>
+<text x="3700.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Send Report</text>
+<rect x="3840" y="3200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="3940.0" y="3223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Data Table</text>
+<text x="3940.0" y="3242" font-size="13" text-anchor="middle" fill="#4b5563">Save Analysis</text>
+<rect x="0" y="4200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="100.0" y="4223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Set</text>
+<text x="100.0" y="4242" font-size="13" text-anchor="middle" fill="#4b5563">Format Incident</text>
+<rect x="240" y="4200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="340.0" y="4223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Data Table</text>
+<text x="340.0" y="4242" font-size="13" text-anchor="middle" fill="#4b5563">Log Incident</text>
+<rect x="480" y="4200" width="200" height="56" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="3"/>
+<text x="580.0" y="4223" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">Gmail</text>
+<text x="580.0" y="4242" font-size="13" text-anchor="middle" fill="#4b5563">Send Alert</text>
+</svg>
