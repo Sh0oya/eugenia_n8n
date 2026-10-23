@@ -91,6 +91,7 @@ Le workflow y écrit ses rapports. Crée-la vide avec ces propriétés :
 | Demande JSON | Texte | |
 | Precedent | URL | |
 | Remplacee Par | URL | |
+| Decision | Sélection | `installé`, `ignoré`, `désinstallé` (rempli à la main : l'IA en tient compte aux analyses suivantes) |
 
 ## 5. À me rendre à la fin
 

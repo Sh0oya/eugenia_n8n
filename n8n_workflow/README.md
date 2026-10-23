@@ -6,11 +6,11 @@
 
 | | |
 |---|---|
-| Workflow | `Can My PC Run It` : **1 workflow, 48 nodes** en 7 blocs numérotés, 13 sticky notes |
+| Workflow | `Can My PC Run It` : **1 workflow, 50 nodes** en 7 blocs numérotés, 13 sticky notes |
 | Formats livrés | [`n8n/workflows/can-my-pc-run-it.workflow.ts`](n8n/workflows/can-my-pc-run-it.workflow.ts) (SDK n8n, pour n8n-cli) et [`exports/can-my-pc-run-it.json`](exports/can-my-pc-run-it.json) (import direct) |
 | Schéma du diagnostic | version 3.0 (JSON joint à chaque e-mail) |
 | Données | 2 Data Tables n8n, remplies par le workflow lui-même |
-| Version | 3.0 — 23 octobre 2026 : les 7 workflows de la v2 (environ 150 nodes) deviennent un workflow de 48 nodes. La variante complète à 157 nodes est conservée dans [`archive/`](archive/v3-full-157-nodes/) |
+| Version | 3.0 — 23 octobre 2026 : les 7 workflows de la v2 (environ 150 nodes) deviennent un workflow de 50 nodes. La variante complète à 157 nodes est conservée dans [`archive/`](archive/v3-full-157-nodes/) |
 
 ## Aperçu
 
@@ -47,7 +47,7 @@ flowchart LR
   V -- oui --> G["GitHub (nodes natifs)<br/>release stable, README, issues<br/>1 passage par dépôt"]
   G --> R{"Déjà analysé ?<br/>même lien + version + objectif"}
   R -- oui --> RU["Rapport existant<br/>par e-mail (0 appel IA)"]
-  R -- non --> C["Contexte Notion<br/>profil + inventaire"]
+  R -- non --> C["Contexte Notion<br/>profil + inventaire<br/>+ tes décisions"]
   C --> AI["Gemini Flash (latest)<br/>secours Flash-Lite<br/>sortie JSON stricte"]
   AI --> VC["Contrôle de cohérence<br/>(preuves GitHub > IA)"]
   VC --> N["Page Notion"]
@@ -75,7 +75,7 @@ flowchart LR
 | Workflow propre | noms « Outil - Action » en Title Case anglais, variables en camelCase, un seul `CONFIGURATION`, 7 blocs, notes sur les nodes importants |
 | Nodes natifs d'abord | GitHub, Notion, Gmail, Data Table, Loop Over Items, Switch, XML, Convert to File, Extract from File, chaîne LLM Gemini avec parseur et modèle de secours. **Aucun HTTP Request.** Seuls 2 Code nodes, justifiés dans leur note : rendu du rapport (Markdown + HTML depuis le même JSON) et contrôle du diagnostic |
 | Modèles IA « latest » | `gemini-flash-latest` et `gemini-flash-lite-latest`, modifiables dans `CONFIGURATION` |
-| Moins de workflows | 1 workflow, 48 nodes (la v2 en comptait 7 et environ 150) |
+| Moins de workflows | 1 workflow, 50 nodes (la v2 en comptait 7 et environ 150) |
 | n8n-cli | `n8ncli validate` et `n8ncli lint --fail-on-warnings` passent sans avertissement |
 | Data Tables remplies | 2 tables, alimentées à chaque exécution (voir plus bas) |
 | Prompt bien fait | rôle dans le message système, sections XML, 4 exemples, entrées en XML, schéma JSON strict, réponse validée par code : [docs/PROMPTS.md](docs/PROMPTS.md) |
@@ -89,12 +89,24 @@ flowchart LR
 
 Un rapport est retrouvé par la **clé de réutilisation** = les dépôts avec leur version (`proprietaire/depot@tag`) et l'objectif. Même lien, même version, même objectif : le rapport existant est renvoyé sans appel IA. Une nouvelle release change la clé, donc relance l'analyse. L'option « Refaire l'analyse » du formulaire ignore le raccourci.
 
+## Tes décisions : installé, ignoré, désinstallé
+
+La base Notion « Analyses » a une propriété **`Decision`** (sélection : `installé`, `ignoré`, `désinstallé`) que **tu remplis à la main** sur la page d'une analyse. Le workflow ne l'écrit jamais ; il la **lit à chaque analyse** et la donne à l'IA :
+
+| Décision sur une analyse | Ce que fait l'IA aux analyses suivantes |
+|---|---|
+| `installé` | le dépôt est **connu** même s'il n'est pas dans l'inventaire : relation « même outil » avec ta version analysée, et il compte parmi tes outils présents pour chercher doublons, compléments et conflits avec les autres dépôts |
+| `ignoré` | elle le rappelle et ne le recommande plus, sauf changement essentiel |
+| `désinstallé` | elle le traite comme absent et signale le motif comme une inconnue |
+
+Une décision s'applique à une analyse d'un **seul dépôt** (les pages de comparaison sont ignorées) ; s'il y en a plusieurs pour le même dépôt, la plus récente compte. Pour garder l'état d'un outil à long terme, l'inventaire (`Etat`, `Presence`, `Version`) reste la référence. La réutilisation ne regarde pas les décisions : après un changement, mets « Refaire l'analyse » sur Oui.
+
 ## Mise en service
 
 ### 1. Prérequis
 
 - n8n 2.x (Data Tables, nodes Gemini).
-- Un espace Notion avec le profil machine, la base « Inventaire » et la base « Analyses » : [docs/notion-setup-prompt.md](docs/notion-setup-prompt.md) est le prompt à donner à ChatGPT pour les créer avec les bons noms de propriétés.
+- Un espace Notion avec le profil machine, la base « Inventaire » et la base « Analyses » (avec sa propriété `Decision`) : [docs/notion-setup-prompt.md](docs/notion-setup-prompt.md) est le prompt à donner à ChatGPT pour les créer avec les bons noms de propriétés.
 - Les credentials suivants, **avec ces noms** :
 
 | Credential | Type n8n | Remarque |
@@ -169,7 +181,7 @@ Pour produire une version prête à déployer sur ton instance (credentials et i
 
 ### Test réel de bout en bout : `huggingface/lerobot`
 
-GitHub, Notion, Gmail et Gemini réels : 1 e-mail et 1 page Notion créés.
+GitHub, Notion, Gmail et Gemini réels. L'essai a démarré **deux fois** à 2 secondes d'intervalle (probablement un appel rejoué par l'outil de test) : 2 pages Notion et 2 e-mails identiques ont été créés ; la ligne `analysis_history` est mise à jour, pas dupliquée.
 
 | Étape | Résultat |
 |---|---|
@@ -188,6 +200,7 @@ Pour ceux-ci, les 4 nodes GitHub étaient remplacés par des données de test et
 | `n8ncli validate` | `[VALID]` |
 | `n8ncli lint --fail-on-warnings` | `[LINT-PASS]`, 0 avertissement |
 | Validateur du skill n8n-pro-max | 0 erreur, 0 avertissement |
+| Décisions : propriété `Decision` lue en vrai dans Notion (7 pages, aucune décision), puis décision « ignoré » simulée sur LeRobot | la décision arrive dans les entrées de l'IA ; le rapport la cite (`decision-1`) et dit que le dépôt a été ignoré ; contrôles passés |
 | Même demande relancée | rapport retrouvé par sa clé, e-mail « rapport existant », aucun appel IA ni lecture Notion |
 | Comparaison de 2 dépôts | 2 passages de boucle, 2 rapports et une comparaison |
 | « Refaire l'analyse » = Oui | analyse refaite, la ligne existante est **mise à jour** (pas de doublon) |
@@ -195,12 +208,13 @@ Pour ceux-ci, les 4 nodes GitHub étaient remplacés par des données de test et
 | Gestionnaire d'erreurs | incident journalisé dans `error_incidents`, alerte construite |
 | `Manual - Setup Data Tables` | les 2 tables sont créées (ou reconnues si elles existent) |
 
-**Pas encore testé** : le cas « aucune release stable » (arrêt avec la raison), l'Error Trigger en production, le formulaire une fois le workflow publié, et le dernier réglage du prompt (consigne de ne jamais écrire d'identifiant dans les textes, ajoutée après le test réel).
+**Pas encore testé** : le cas « aucune release stable » (arrêt avec la raison), l'Error Trigger en production, le formulaire une fois le workflow publié.
 
 ## Limites connues
 
 - Seul le README est lu, avec les notes de release et les issues sur l'installation : ce que le README ne dit pas reste « inconnu » dans le rapport.
 - Pas de recherche Web : les alternatives externes sont dans les inconnues.
+- Les décisions ne s'appliquent qu'aux analyses d'un seul dépôt ; une page de comparaison est ignorée.
 - Un dépôt sans release stable (brouillons et pré-releases ignorés) arrête l'exécution avec la raison.
 - Gemini Flash peut mettre plus de 3 minutes sur un diagnostic long (le modèle de secours reprend la main en cas d'erreur). Le workflow ne fixe aucun délai maximal : certaines offres n8n plafonnent la durée d'une exécution (180 s sur l'essai gratuit utilisé ici) et coupent alors un appel lent.
 - Le profil est lu en Markdown (Notion peut tronquer une page très longue) ; l'inventaire est donné en entier à l'IA, il doit rester court (une cinquantaine d'outils).
@@ -212,7 +226,7 @@ Pour ceux-ci, les 4 nodes GitHub étaient remplacés par des données de test et
 
 | Date | Version | Changement |
 |---|---|---|
-| 2026-10-23 | 3.0 | Sept workflows fusionnés en un seul de 48 nodes : nodes natifs d'abord, sticky notes, credentials renommés, alias Gemini *latest*, réutilisation par lien, Data Tables remplies par le workflow, `.workflow.ts` et lint n8n-cli |
+| 2026-10-23 | 3.0 | Sept workflows fusionnés en un seul de 50 nodes : nodes natifs d'abord, sticky notes, credentials renommés, alias Gemini *latest*, réutilisation par lien, décisions installé / ignoré / désinstallé lues par l'IA, Data Tables remplies par le workflow, `.workflow.ts` et lint n8n-cli |
 | 2026-10-21 | 2.0 | Première version en production, sept workflows |
 
 Briques reprises des templates de Lucas Peyrin : **5160** (modèle de secours), **5144** (JSON vers XML, remplacé ici par le node XML natif), **20499** (gestion d'erreurs, allégée).
