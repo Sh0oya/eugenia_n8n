@@ -156,7 +156,7 @@ class Flow:
                             raise ValueError(f"Unknown connection target: {t['node']}")
         settings = {"executionOrder": "v1", "timezone": "Europe/Paris", "saveManualExecutions": True,
                     "saveDataErrorExecution": "all", "saveDataSuccessExecution": "all", "saveExecutionProgress": True,
-                    "callerPolicy": "workflowsFromSameOwner", "availableInMCP": False, "executionTimeout": 900}
+                    "callerPolicy": "workflowsFromSameOwner", "availableInMCP": False}
         settings.update(self.extra_settings)
         settings["description"] = self.description
         return {"name": self.name, "nodes": self.nodes, "connections": self.connections, "settings": settings,

@@ -17,7 +17,7 @@ Write one report per repository, in the order given. In compare mode, also write
 10. Ratings from 1 to 5 on the nine criteria, in priority order: usefulFeatures, easeOfUse, easeOfInstallation, pcPerformance, cost, privacy, documentation, maintenance, modifiability. An unknown rating is null with unratedReason. No weighting. A blocking issue or a serious risk appears in the TL;DR whatever the ratings are.
 11. First trial of 15 to 60 minutes in a dedicated environment isolated from LeRobot, with stop and cleanup. If it is blocked locally: feasibleLocally false, blockReason and alternativeCheck.
 12. Compare mode: one report per repository PLUS a comparison, without forcing a winner when the tools are complementary. Other modes: comparison is null.
-13. Copy repository and version exactly as given. Cite only ids present in <profile> or <inventory> in usedContext, with the precise use. The README is the only document read: what it does not say is unknown, not absent.
+13. Copy repository and version exactly as given. Cite only ids present in <profile> or <inventory> in usedContext, with the precise use. Never write an id in a text value: name the tool or the profile section instead. The README is the only document read: what it does not say is unknown, not absent.
 </context>
 
 <examples>
