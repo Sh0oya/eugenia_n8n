@@ -50,17 +50,17 @@ def chat_model(model_field, temperature, tokens):
 
 def build(w):
     r = 16
-    w.add("XML - Convert Inputs", *XML, {"mode": "jsonToxml", "dataPropertyName": "data", "options": {"rootName": "inputs", "headless": True}}, (6, r),
+    w.add("XML - Convert Inputs", *XML, {"mode": "jsonToxml", "dataPropertyName": "data", "options": {"rootName": "inputs", "headless": True}}, (8, r),
           note="Native JSON to XML conversion replaces a custom Code node (course rule: structured XML inputs).")
     w.add("Basic LLM Chain - Write Diagnostic", *CHAIN, {"promptType": "define", "text": "=" + prompt("diagnostic.user.xml"),
           "messages": {"messageValues": [{"message": prompt("diagnostic.system.md")}]}, "hasOutputParser": True, "needsFallback": True, "batching": {}},
-          (7, r), onError="continueErrorOutput", retryOnFail=True, maxTries=2, waitBetweenTries=5000,
+          (9, r), onError="continueErrorOutput", retryOnFail=True, maxTries=2, waitBetweenTries=5000,
           note="System message = role. User message = goal, context, examples and output format in XML, then the inputs. Gemini Flash with a Flash-Lite fallback.")
-    w.add("Gemini Chat - Main Model", *GEMINI_CHAT, chat_model("diagnosticModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (6.6, r + 1.7), **cred("gemini"))
-    w.add("Gemini Chat - Fallback Model", *GEMINI_CHAT, chat_model("fallbackModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (7.4, r + 1.7), **cred("gemini"))
-    w.add("Output Parser - Diagnostic Schema", *PARSER, {"schemaType": "manual", "inputSchema": json.dumps(schema(), ensure_ascii=False, indent=1), "autoFix": True}, (8.2, r + 1.7))
-    w.add("Gemini Chat - Format Repair Model", *GEMINI_CHAT, chat_model("fallbackModel", 0, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (8.6, r + 3.2), **cred("gemini"))
-    w.add("Code - Validate and Finalize Diagnostic", *CODE, {"mode": "runOnceForAllItems", "jsCode": code("validate-diagnostic.js")}, (8, r),
+    w.add("Gemini Chat - Main Model", *GEMINI_CHAT, chat_model("diagnosticModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (8.6, r + 1.7), **cred("gemini"))
+    w.add("Gemini Chat - Fallback Model", *GEMINI_CHAT, chat_model("fallbackModel", 0.1, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (9.4, r + 1.7), **cred("gemini"))
+    w.add("Output Parser - Diagnostic Schema", *PARSER, {"schemaType": "manual", "inputSchema": json.dumps(schema(), ensure_ascii=False, indent=1), "autoFix": True}, (10.2, r + 1.7))
+    w.add("Gemini Chat - Format Repair Model", *GEMINI_CHAT, chat_model("fallbackModel", 0, "={{ $('CONFIGURATION').first().json.maxOutputTokens }}"), (10.6, r + 3.2), **cred("gemini"))
+    w.add("Code - Validate and Finalize Diagnostic", *CODE, {"mode": "runOnceForAllItems", "jsCode": code("validate-diagnostic.js")}, (10, r),
           note="Why Code: cross-checking nested arrays (repositories, ratings, cited context) and assembling the final JSON is not possible with standard nodes. Evidence from GitHub always overrides the AI.")
 
     w.link("Set - Gather Prompt Inputs", "XML - Convert Inputs")

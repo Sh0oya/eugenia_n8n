@@ -28,13 +28,14 @@ if (!failure) {
   if (request.mode === 'compare' && !output.comparison) reasons.push('comparison is missing in compare mode');
   if (!(output.sources || []).length) reasons.push('no source cited');
   if (!(output.usedContext || []).length) reasons.push('no personal context cited');
-  const knownIds = new Set([...input.profile.map(p => p.id), ...input.inventory.map(o => o.id)]);
-  if ((output.usedContext || []).some(c => !knownIds.has(c.id))) reasons.push('cited context is not part of the provided profile and inventory');
+  const knownIds = new Set([...input.profile.map(p => p.id), ...input.inventory.map(o => o.id), ...input.decisions.map(d => d.id)]);
+  if ((output.usedContext || []).some(c => !knownIds.has(c.id))) reasons.push('cited context is not part of the provided profile, inventory and decisions');
 }
 
 const ok = reasons.length === 0;
-const labelOf = id => input.profile.find(p => p.id === id) || input.inventory.find(o => o.id === id) || {};
-const typeOf = id => (input.profile.some(p => p.id === id) ? 'profile' : 'inventory');
+const decisionLabel = d => `${d.repository} (${d.decision})`;
+const labelOf = id => input.profile.find(p => p.id === id) || input.inventory.find(o => o.id === id) || (d => (d ? { label: decisionLabel(d) } : {}))(input.decisions.find(x => x.id === id));
+const typeOf = id => (input.profile.some(p => p.id === id) ? 'profile' : input.decisions.some(d => d.id === id) ? 'decision' : 'inventory');
 
 const diagnostic = {
   schemaVersion: config.schemaVersion,
@@ -48,6 +49,7 @@ const diagnostic = {
     machine: input.machine,
     profileRevision: input.profileRevision || null,
     inventoryMatches: input.matches,
+    decisions: input.decisions,
     passages: ok ? output.usedContext.map(c => ({ id: c.id, usage: c.usage, label: labelOf(c.id).label || labelOf(c.id).name || c.id, type: typeOf(c.id) })) : [],
   },
   recommendation: ok ? output.recommendation : 'Diagnostic non produit : relancer après correction de la cause.',
@@ -62,7 +64,7 @@ const diagnostic = {
     // Same rule as the lookup in "Data Table - Find Existing Analysis": repositories with version, then the goal.
     reuseKey: `${repositories.map(r => `${r.key}@${r.tag}`).sort().join(' + ')} | ${parsed.goal.toLowerCase()}`,
     durationSeconds: Math.round((Date.now() - new Date(request.receivedAt).getTime()) / 1000),
-    context: { profileSections: input.profile.length, inventoryItems: input.inventory.length },
+    context: { profileSections: input.profile.length, inventoryItems: input.inventory.length, decisions: input.decisions.length },
   },
 };
 

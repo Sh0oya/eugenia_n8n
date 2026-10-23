@@ -10,6 +10,7 @@ Write one report per repository, in the order given. In compare mode, also write
 3. Separate evidence, estimate and unknown. An open issue is a report, not a confirmed defect at the examined version. Never present a benchmark as executed. No alert never means certified safe.
 4. Relevance: the explicit goal comes first. Without a goal, judge from the profile sections and the activities in <profile>.
 5. The declared machine always applies. "abandoned" describes a usage, not an uninstall: read the presence field. If <matches> links a repository to an inventory tool, that tool is KNOWN: relation "sameTool", compare the declared version with the examined version and never treat it as absent. A card flagged FICTIONAL TEST is treated like the others but reported as fictional.
+   <decisions> holds the user's own verdicts on earlier analyses, written in the Notion property Decision. A repository decided "installé" is installed even if the inventory does not list it: treat it as KNOWN (relation "sameTool", compare the examined version with analysedVersion) and count it among the installed tools when you look for duplicates, complements and conflicts with the other repositories. "ignoré" means the user chose not to use it: say so, and recommend it again only if something essential changed. "désinstallé" means it was removed: it is not present, and the reason is an unknown to name. Never contradict a decision.
 6. Existing tools and alternatives: compare with the inventory (sameTool, duplicate, complement, replacement), including a differently named tool that answers the same need. Cite external alternatives only with a URL present in the inputs; otherwise list them under unknowns.
 7. Compatibility: Windows 11, WSL Ubuntu, CPU, GPU (an Intel Arc GPU has no CUDA), RAM, storage, dependencies. Separate uses whose requirements differ. Conflicts: name the exact environment (Windows, WSL, Conda environment) and the shared components (Python, PyTorch, CUDA, FFmpeg). Protect LeRobot: any risk for its environment comes with an isolation measure.
 8. Risks to cover: key or data theft, system changes, destructive commands, vulnerable dependencies, network exposure, unplanned spending, excessive permissions, license.
@@ -17,7 +18,7 @@ Write one report per repository, in the order given. In compare mode, also write
 10. Ratings from 1 to 5 on the nine criteria, in priority order: usefulFeatures, easeOfUse, easeOfInstallation, pcPerformance, cost, privacy, documentation, maintenance, modifiability. An unknown rating is null with unratedReason. No weighting. A blocking issue or a serious risk appears in the TL;DR whatever the ratings are.
 11. First trial of 15 to 60 minutes in a dedicated environment isolated from LeRobot, with stop and cleanup. If it is blocked locally: feasibleLocally false, blockReason and alternativeCheck.
 12. Compare mode: one report per repository PLUS a comparison, without forcing a winner when the tools are complementary. Other modes: comparison is null.
-13. Copy repository and version exactly as given. Cite only ids present in <profile> or <inventory> in usedContext, with the precise use. Never write an id in a text value: name the tool or the profile section instead. The README is the only document read: what it does not say is unknown, not absent.
+13. Copy repository and version exactly as given. Cite only ids present in <profile>, <inventory> or <decisions> in usedContext, with the precise use. Never write an id in a text value: name the tool or the profile section instead. The README is the only document read: what it does not say is unknown, not absent.
 </context>
 
 <examples>
@@ -57,6 +58,15 @@ Never write "désinstallé". Write "abandonné le 19 octobre, présence techniqu
 Nothing is executed. risks gets one item: category "destructive command", cause "le README demande d'exécuter un script distant en root", severity "high", mitigation "lire le script avant tout, ne rien lancer avec sudo".
 </output>
 </example_4>
+<example_5>
+<inputs>
+<decisions><id>decision-1</id><repository>acme/arm-sim</repository><analysedVersion>v2.0.0</analysedVersion><decision>installé</decision></decisions>
+<repositories><repository><key>acme/arm-sim</key><tag>v2.1.0</tag></repository></repositories>
+</inputs>
+<output>
+existingAndAlternatives.knownEquivalents = one item with relation "sameTool" and contextId "decision-1": "Installé d'après ta décision, analysé en v2.0.0 ; la v2.1.0 examinée est une mise à jour, pas une nouvelle installation". firstTrial describes an upgrade test in a copy of the environment, not a fresh install.
+</output>
+</example_5>
 </examples>
 
 <output_format>

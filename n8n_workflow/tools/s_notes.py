@@ -7,8 +7,8 @@ def build(w):
         "# Can My PC Run It\n"
         "**Goal** - Tell Mathieu, in French, whether a public GitHub tool will run on his PC before he installs it: compatibility, risks, conflicts with what he already uses, first test.\n\n"
         "**Triggers** - Form (Basic Auth) and error trigger (this workflow is its own error workflow).\n\n"
-        "**Flow** - request check, GitHub evidence one repository at a time (latest stable release, README, issues), reuse of an identical report, personal context from Notion (profile and inventory), Gemini diagnostic with a strict JSON schema, then a Notion page and an HTML e-mail with the JSON attached.\n\n"
-        "**Data Tables** - analysis_history (also used for reuse) and error_incidents.\n\n"
+        "**Flow** - request check, GitHub evidence one repository at a time (latest stable release, README, issues), reuse of an identical report, personal context from Notion (profile, inventory and your Installed, Ignored or Uninstalled decisions), Gemini diagnostic with a strict JSON schema, then a Notion page and an HTML e-mail with the JSON attached.\n\n"
+        "**Data Tables** - analysis_history (also used for reuse) and error_incidents. The Decision property of the Notion Analyses database is filled by hand and read by the AI.\n\n"
         "**Never** - nothing is installed or executed on the PC, and a missing stable release stops the run with a clear reason.",
         (-1000, -300), 860, 560, BLUE)
     w.sticky(

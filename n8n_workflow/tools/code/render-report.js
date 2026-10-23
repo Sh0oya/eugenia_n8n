@@ -75,7 +75,7 @@ const traceLines = () => {
     `Mode : ${d.mode}${d.goal ? ` — objectif : ${d.goal}` : ' — sans objectif explicite (pertinence jugée sur le profil)'}`,
     ...d.repositories.map(x => `${x.repository} : ${x.version}${x.releaseUrl ? ` (${x.releaseUrl})` : ''}`),
     `Moteur : ${t.model} — durée ${t.durationSeconds} s`,
-    `Contexte fourni : ${t.context?.profileSections} sections du profil et ${t.context?.inventoryItems} outils de l’inventaire`,
+    `Contexte fourni : ${t.context?.profileSections} sections du profil, ${t.context?.inventoryItems} outils de l’inventaire et ${t.context?.decisions ?? 0} décisions`,
     ...list(d.usedProfile?.passages).map(p => `Contexte utilisé : ${p.label}${p.type === 'fictional' ? ' (FICTIF)' : ''} — ${p.usage}`),
     ...list(d.sources).map(s => `Source : ${s.url} — ${s.usage || s.type || ''}`),
     ...list(d.examinationLimits).map(l => `Limite : ${l}`),
@@ -154,7 +154,7 @@ const emailHtml = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><m
   ${comparisonHtml}
   <tr><td style="padding:24px 28px;border-top:6px solid #f3f4f6;background:#fafafa;font-size:12px;line-height:1.6;color:#6b7280"><b style="color:#374151">Traçabilité</b><br>
     ${esc(d.id)} · schéma ${esc(d.schemaVersion)} · ${d.repositories.map(x => `${esc(x.repository)}@${esc(x.version)}`).join(', ')}<br>
-    ${esc(trace.model)} · ${esc(trace.durationSeconds)} s · ${esc(trace.context?.profileSections)} sections de profil et ${esc(trace.context?.inventoryItems)} outils fournis<br>
+    ${esc(trace.model)} · ${esc(trace.durationSeconds)} s · ${esc(trace.context?.profileSections)} sections de profil, ${esc(trace.context?.inventoryItems)} outils et ${esc(trace.context?.decisions ?? 0)} décisions fournis<br>
     ${list(d.usedProfile?.passages).length ? `Contexte utilisé : ${d.usedProfile.passages.map(p => esc(p.label)).join(', ')}<br>` : ''}
     ${list(d.examinationLimits).length ? `Limites : ${d.examinationLimits.map(esc).join(' · ')}<br>` : ''}
     ${list(d.sources).length ? `Sources : ${d.sources.map((s, i) => link(s.url, `[${i + 1}]`)).join(' ')}<br>` : ''}<br>
