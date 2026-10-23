@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: module-solide
+expected_outcome: |
+  The module is correct for its documented contract (inclusive bounds, holidays supplied by the caller, ValueError
+  when end is before start, used for spans of a few weeks). A good result does not invent defects: its verdict is
+  that nothing is broken (or only minor remarks), it lists the attacks it tried, and names the most fragile
+  assumption (for example holidays supplied by the caller, or performance on very long spans).
+context:
+  scaffold_script: place-files.sh

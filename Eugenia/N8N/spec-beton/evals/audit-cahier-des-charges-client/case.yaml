@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: audit-cahier-des-charges-client
+expected_outcome: |
+  The assistant audits the client document, lists the concrete gaps (double booking, recurrence, cancellation
+  rules, rights, deleted rooms with future bookings, multi-site, vague requirements such as simple and
+  intuitive...), and asks a first prioritized batch of questions with recommended answers instead of inventing
+  the client's answers.
+context:
+  scaffold_script: place-files.sh

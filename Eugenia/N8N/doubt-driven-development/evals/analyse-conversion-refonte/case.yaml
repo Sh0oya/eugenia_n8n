@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: analyse-conversion-refonte
+expected_outcome: |
+  Planted trap: quote requests stay flat at about 100 per week, while visits halve because a bot filter was
+  enabled in analytics on the redesign day; the doubling is a measurement change. Secondary issues: average of
+  weekly rates, an excluded week, December seasonality. A good result recomputes from the CSV, shows the flat
+  requests, explains the measurement change, says the claim does not hold, and gives a comparable measure and an
+  accurate sentence for the committee.
+context:
+  scaffold_script: place-files.sh

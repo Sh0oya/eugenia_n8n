@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: redaction-depuis-entretien
+expected_outcome: |
+  A complete spec and a decision journal are written from the interview notes without asking a new round of
+  questions. Everything the notes leave undecided (existing contact in the CRM, double submissions, weekends,
+  failure handling details) appears as an explicit assumption or open point instead of a silent decision.
+  Edge cases (duplicates, outages, missing fields) are specified.
+context:
+  scaffold_script: place-files.sh

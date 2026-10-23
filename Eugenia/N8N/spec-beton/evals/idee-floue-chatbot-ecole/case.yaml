@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: idee-floue-chatbot-ecole
+expected_outcome: |
+  The assistant does not jump to writing a spec. It reformulates the request, notices that a chatbot is a solution
+  and digs into the underlying problem, records the brief, and asks a short first batch of prioritized questions,
+  each with a recommended answer, then waits for the user.

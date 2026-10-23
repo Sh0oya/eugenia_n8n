@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: plan-workflow-contre-spec
+expected_outcome: |
+  Planted gaps against the spec: exact day matching (== 3, == 10, == 20) loses a reminder on a day without run
+  and ignores the shift to the next working day; UTC server time; total amount instead of remaining amount (R03);
+  partner in copy (R04); no switch before activation (R01); no escalation (R07), suspension label (R08), catch-up
+  (R09), zero alert (R10), first pass (R11), invalid email (R12); first error stops the whole run. A good result
+  uses the spec rules as the contract, lists the uncovered rules, raises what the spec does not settle as a question
+  instead of deciding it, runs nothing that sends real emails, and says the plan is not ready to build as is.
+context:
+  scaffold_script: place-files.sh
