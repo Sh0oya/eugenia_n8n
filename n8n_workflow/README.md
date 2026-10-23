@@ -6,11 +6,11 @@
 
 | | |
 |---|---|
-| Workflow | `Can My PC Run It` : **1 workflow, 50 nodes** en 7 blocs numérotés, 13 sticky notes |
+| Workflow | `Can My PC Run It` : **1 workflow, 54 nodes** en 7 blocs numérotés, 13 sticky notes |
 | Formats livrés | [`n8n/workflows/can-my-pc-run-it.workflow.ts`](n8n/workflows/can-my-pc-run-it.workflow.ts) (SDK n8n, pour n8n-cli) et [`exports/can-my-pc-run-it.json`](exports/can-my-pc-run-it.json) (import direct) |
 | Schéma du diagnostic | version 3.0 (JSON joint à chaque e-mail) |
 | Données | 2 Data Tables n8n, remplies par le workflow lui-même |
-| Version | 3.0 — 23 octobre 2026 : les 7 workflows de la v2 (environ 150 nodes) deviennent un workflow de 50 nodes. La variante complète à 157 nodes est conservée dans [`archive/`](archive/v3-full-157-nodes/) |
+| Version | 3.0 — 23 octobre 2026 : les 7 workflows de la v2 (environ 150 nodes) deviennent un workflow de 54 nodes. La variante complète à 157 nodes est conservée dans [`archive/`](archive/v3-full-157-nodes/) |
 
 ## Aperçu
 
@@ -44,7 +44,7 @@ Contexte Notion, diagnostic IA, livraison :
 flowchart LR
   F["Formulaire<br/>(Basic Auth)"] --> V{"Demande<br/>valide ?"}
   V -- non --> X["Arrêt avec la raison<br/>(alerte par e-mail)"]
-  V -- oui --> G["GitHub (nodes natifs)<br/>release stable, README, issues<br/>1 passage par dépôt"]
+  V -- oui --> G["GitHub (nodes natifs)<br/>release stable, README,<br/>pyproject.toml, requirements.txt, issues<br/>1 passage par dépôt"]
   G --> R{"Déjà analysé ?<br/>même lien + version + objectif"}
   R -- oui --> RU["Rapport existant<br/>par e-mail (0 appel IA)"]
   R -- non --> C["Contexte Notion<br/>profil + inventaire<br/>+ tes décisions"]
@@ -75,7 +75,7 @@ flowchart LR
 | Workflow propre | noms « Outil - Action » en Title Case anglais, variables en camelCase, un seul `CONFIGURATION`, 7 blocs, notes sur les nodes importants |
 | Nodes natifs d'abord | GitHub, Notion, Gmail, Data Table, Loop Over Items, Switch, XML, Convert to File, Extract from File, chaîne LLM Gemini avec parseur et modèle de secours. **Aucun HTTP Request.** Seuls 2 Code nodes, justifiés dans leur note : rendu du rapport (Markdown + HTML depuis le même JSON) et contrôle du diagnostic |
 | Modèles IA « latest » | `gemini-flash-latest` et `gemini-flash-lite-latest`, modifiables dans `CONFIGURATION` |
-| Moins de workflows | 1 workflow, 50 nodes (la v2 en comptait 7 et environ 150) |
+| Moins de workflows | 1 workflow, 54 nodes (la v2 en comptait 7 et environ 150) |
 | n8n-cli | `n8ncli validate` et `n8ncli lint --fail-on-warnings` passent sans avertissement |
 | Data Tables remplies | 2 tables, alimentées à chaque exécution (voir plus bas) |
 | Prompt bien fait | rôle dans le message système, sections XML, 4 exemples, entrées en XML, schéma JSON strict, réponse validée par code : [docs/PROMPTS.md](docs/PROMPTS.md) |
@@ -200,19 +200,21 @@ Pour ceux-ci, les 4 nodes GitHub étaient remplacés par des données de test et
 | `n8ncli validate` | `[VALID]` |
 | `n8ncli lint --fail-on-warnings` | `[LINT-PASS]`, 0 avertissement |
 | Validateur du skill n8n-pro-max | 0 erreur, 0 avertissement |
+| Fichiers de dépendances (GitHub réel, envois simulés) : `pyproject.toml` de LeRobot lu au tag v0.6.1, `requirements.txt` absent sans erreur | l'IA compare `requires-python >=3.12`, `torch>=2.7,<2.12.0` et `numpy>=2.0.0,<2.3.0` avec ta pile installée (Python 3.12.15, PyTorch 2.11.0+cpu) et cite le fichier comme preuve ; dépendances « compatible » |
 | Décisions : propriété `Decision` lue en vrai dans Notion (7 pages, aucune décision), puis décision « ignoré » simulée sur LeRobot | la décision arrive dans les entrées de l'IA ; le rapport la cite (`decision-1`) et dit que le dépôt a été ignoré ; contrôles passés |
 | Même demande relancée | rapport retrouvé par sa clé, e-mail « rapport existant », aucun appel IA ni lecture Notion |
 | Comparaison de 2 dépôts | 2 passages de boucle, 2 rapports et une comparaison |
 | « Refaire l'analyse » = Oui | analyse refaite, la ligne existante est **mise à jour** (pas de doublon) |
 | Demande invalide (URL GitLab) | arrêt avec « Invalid request: Not an https GitHub repository URL… » |
+| Publication (23 octobre) : workflow publié, « Error workflow » réglé sur lui-même, anciens workflows dépubliés | seul workflow actif ; formulaire de production : 401 sans identifiants (protégé), ancien formulaire : 404 |
 | Gestionnaire d'erreurs | incident journalisé dans `error_incidents`, alerte construite |
 | `Manual - Setup Data Tables` | les 2 tables sont créées (ou reconnues si elles existent) |
 
-**Pas encore testé** : le cas « aucune release stable » (arrêt avec la raison), l'Error Trigger en production, le formulaire une fois le workflow publié.
+**Pas encore testé** : le cas « aucune release stable » (arrêt avec la raison), l'Error Trigger en production, une vraie soumission du formulaire publié.
 
 ## Limites connues
 
-- Seul le README est lu, avec les notes de release et les issues sur l'installation : ce que le README ne dit pas reste « inconnu » dans le rapport.
+- Sont lus : le README, `pyproject.toml` et `requirements.txt` (s'ils existent, sinon rien), les notes de release et les issues sur l'installation. Ce que ces fichiers ne disent pas reste « inconnu » dans le rapport. Les dépôts qui déclarent leurs dépendances ailleurs (`package.json`, `environment.yml`…) ne sont pas couverts.
 - Pas de recherche Web : les alternatives externes sont dans les inconnues.
 - Les décisions ne s'appliquent qu'aux analyses d'un seul dépôt ; une page de comparaison est ignorée.
 - Un dépôt sans release stable (brouillons et pré-releases ignorés) arrête l'exécution avec la raison.
@@ -226,7 +228,7 @@ Pour ceux-ci, les 4 nodes GitHub étaient remplacés par des données de test et
 
 | Date | Version | Changement |
 |---|---|---|
-| 2026-10-23 | 3.0 | Sept workflows fusionnés en un seul de 50 nodes : nodes natifs d'abord, sticky notes, credentials renommés, alias Gemini *latest*, réutilisation par lien, décisions installé / ignoré / désinstallé lues par l'IA, Data Tables remplies par le workflow, `.workflow.ts` et lint n8n-cli |
+| 2026-10-23 | 3.0 | Sept workflows fusionnés en un seul de 54 nodes : nodes natifs d'abord, sticky notes, credentials renommés, alias Gemini *latest*, réutilisation par lien, décisions installé / ignoré / désinstallé lues par l'IA, Data Tables remplies par le workflow, `.workflow.ts` et lint n8n-cli |
 | 2026-10-21 | 2.0 | Première version en production, sept workflows |
 
 Briques reprises des templates de Lucas Peyrin : **5160** (modèle de secours), **5144** (JSON vers XML, remplacé ici par le node XML natif), **20499** (gestion d'erreurs, allégée).

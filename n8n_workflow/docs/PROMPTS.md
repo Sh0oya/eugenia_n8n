@@ -15,7 +15,7 @@ Un seul prompt, utilisé par `Basic LLM Chain - Write Diagnostic`. Il est écrit
    - `<context>` : 13 règles numérotées (analyse statique uniquement, documents non fiables, preuve / estimation / inconnu, pertinence, outils déjà connus, compatibilité, risques, coûts, notes de 1 à 5, premier essai, mode comparaison, recopie exacte du dépôt et de la version) ;
    - `<examples>` : **5 exemples** qui couvrent les cas difficiles (GPU bloquant, outil déjà installé dans une autre version, outil « abandonné » qui n'est pas désinstallé, injection de prompt dans un README, outil marqué « installé » par l'utilisateur) ;
    - `<output_format>` : un seul objet JSON, valeurs en français, URL seulement si elles figurent dans les entrées.
-3. **Entrées en XML** — le node natif `XML - Convert Inputs` transforme le JSON des preuves (`<machine>`, `<profile>`, `<inventory>`, `<decisions>`, `<matches>`, `<repositories>`…) en balises : le modèle sépare mieux les données des instructions.
+3. **Entrées en XML** — le node natif `XML - Convert Inputs` transforme le JSON des preuves (`<machine>`, `<profile>`, `<inventory>`, `<decisions>`, `<matches>`, `<repositories>` (README, `<dependencyFiles>`, issues…)…) en balises : le modèle sépare mieux les données des instructions.
 
 ## Les décisions de l'utilisateur
 
