@@ -45,8 +45,11 @@ def build(w):
           (6, r), onError="continueRegularOutput", **cred("github"),
           note="Optional file at the examined version: declared dependencies and versions. A repository without it simply gives nothing; any other error is reported as a limit.")
     w.add("Extract from File - Read Project File", *EXTRACT_FILE, {"operation": "text", "binaryPropertyName": "data", "destinationKey": "content", "options": {}}, (7, r), onError="continueRegularOutput")
-    dependency_files = (f"(t => t ? [{{ path: 'pyproject.toml', url: `${{{SEL}.repository.url}}/blob/${{{SEL}.ref}}/pyproject.toml`, "
-                        f"text: {CLEAN}(t.split('\\n').filter(l => l.trim() && !l.trim().startsWith('#')).join('\\n').slice(0, {CFG}.maxDependencyChars)) }}] : [])({PROJECT})")
+    # pyproject.toml without its comment lines, cut at maxDependencyChars: the cut is written in the text the AI reads and in the limits
+    project_lines = "t.split('\\n').filter(l => l.trim() && !l.trim().startsWith('#')).join('\\n')"
+    dependency_files = (f"(t => (c => c ? [{{ path: 'pyproject.toml', url: `${{{SEL}.repository.url}}/blob/${{{SEL}.ref}}/pyproject.toml`, "
+                        f"text: {CLEAN}(c.length > {CFG}.maxDependencyChars ? `${{c.slice(0, {CFG}.maxDependencyChars)}}\\n[cut here: the rest of pyproject.toml was not read]` : c) }}] : [])({project_lines}))({PROJECT})")
+    project_cut = f"(t => {project_lines}.length > {CFG}.maxDependencyChars)({PROJECT})"
     # A missing file is normal; any other error (rate limit, 5xx) must not look like a missing file.
     project_limit = (f"(e => e && !/not found|could not be found|404/i.test(String(e)) ? `${{{SEL}.repository.key}}: pyproject.toml could not be read (${{String(e).slice(0, 120)}})` : '')"
                      "($('GitHub - Get Project File').first().json.error)")
@@ -65,7 +68,8 @@ def build(w):
         ("limits", "array", E(f"[\n  !{README} ? `${{{SEL}.repository.key}}: README.md could not be read at the examined version (README.rst and other names are not read)` : '',\n"
                               f"  {README}.length > {CFG}.maxReadmeChars ? `${{{SEL}.repository.key}}: long README reduced to its introduction and installation sections` : '',\n"
                               f"  !{SEL}.releaseUrl ? `${{{SEL}.repository.key}}: no stable release published, the default branch was examined (${{{SEL}.tag}}) and can change` : '',\n"
-                              f"  {project_limit}\n].filter(Boolean)"))),
+                              f"  {project_limit},\n"
+                              f"  {project_cut} ? `${{{SEL}.repository.key}}: pyproject.toml cut at ${{{CFG}.maxDependencyChars}} characters, the rest is unknown` : ''\n].filter(Boolean)"))),
         (8, r), note="Everything the AI may use about the repository: version, release notes, README (reduced to what matters) and pyproject.toml.")
 
     w.link("IF - Request Valid", "GitHub - Get Repository", 0)

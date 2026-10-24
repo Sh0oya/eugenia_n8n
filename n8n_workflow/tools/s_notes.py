@@ -10,10 +10,11 @@ def build(w):
         "**Deliverable** - a Notion page and an HTML e-mail with the diagnostic; one row per analysis in the analysis_history Data Table.\n\n"
         "**Flow** - request check (one repository per request), GitHub evidence (latest stable release or default branch, README, pyproject.toml), reuse of an identical report, personal context from Notion (profile, inventory and your Installed, Ignored or Uninstalled decisions), Gemini diagnostic with a strict JSON schema, then delivery.\n\n"
         "**Owners** - business and technical owner: Mathieu Haye. n8n project: Personal, folder Sandbox.\n\n"
-        "**Never** - nothing is installed or executed on the PC; links and images that the inputs do not contain are removed from the AI text.",
+        "**Never** - nothing is installed or executed on the PC; images, tags and Markdown links to addresses that the inputs do not contain are removed from the AI text.",
         (-1000, -300), 860, 560, BLUE)
     w.sticky(
         "### Journal des Revues\n"
+        "- **24/10/2026 (M. Haye)** : real test of the 3.1 copy: link filter relaxed (plain URLs stay, links to addresses of the inputs stay), cut of pyproject.toml marked, seven more tests.\n"
         "- **23/10/2026 (M. Haye)** : prompt reviewed again: examples written with the real input tags, examination limits given once, tests for the four e-mails and the prompt.\n"
         "- **23/10/2026 (M. Haye)** : hostile review and fixes: AI links and images filtered, text cleaned before the XML node, only fully delivered reports reused, default branch examined when there is no stable release, exact tool matching, environment and item limit with a Limit node. Simplified to 40 nodes: attachment, repair model, table setup, loop over several repositories with a comparison, issues and requirements.txt removed. Gemini models and prompt reviewed: same models, prompt rules changed for the default branch, exact tool matching and the single report.\n"
         "- **23/10/2026 (M. Haye)** : v3.0, seven workflows merged into one.\n"

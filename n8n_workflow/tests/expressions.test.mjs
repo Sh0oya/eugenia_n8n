@@ -83,11 +83,27 @@ test('a repository without stable release says it in the limits', () => {
   assert.match(limits.join(), /no stable release published, the default branch was examined \(main \(2026-10-20\)\)/);
 });
 
-test('pyproject.toml is given without comment lines and capped, or not at all', () => {
-  const files = evidence('dependencyFiles', { CONFIGURATION: { ...CONFIGURATION, maxDependencyChars: 30 }, 'Extract from File - Read Project File': { content: '# comment\n[project]\nrequires-python = ">=3.12"\ndependencies = ["torch>=2.7"]\n' } });
+const PYPROJECT = '# comment\n[project]\nrequires-python = ">=3.12"\ndependencies = ["torch>=2.7"]\n';
+const PYPROJECT_KEPT = '[project]\nrequires-python = ">=3.12"\ndependencies = ["torch>=2.7"]';
+const CUT = '[cut here: the rest of pyproject.toml was not read]';
+const pyproject = (maxDependencyChars, name) => evidence(name, { CONFIGURATION: { ...CONFIGURATION, maxDependencyChars }, 'Extract from File - Read Project File': { content: PYPROJECT } });
+
+test('pyproject.toml is given without its comment lines, or not at all', () => {
+  const files = pyproject(5000, 'dependencyFiles');
   assert.deepEqual(files.map(f => [f.path, f.url]), [['pyproject.toml', 'https://github.com/o/r/blob/v1/pyproject.toml']]);
-  assert.equal(files[0].text, '[project]\nrequires-python = ">=3.12"'.slice(0, 30));
+  assert.equal(files[0].text, PYPROJECT_KEPT);
   assert.deepEqual(evidence('dependencyFiles', {}), []);
+});
+
+test('a cut of pyproject.toml is written in the text the AI reads and in the limits', () => {
+  assert.equal(pyproject(30, 'dependencyFiles')[0].text, `${PYPROJECT_KEPT.slice(0, 30)}\n${CUT}`);
+  assert.deepEqual(pyproject(30, 'limits'), ['o/r: pyproject.toml cut at 30 characters, the rest is unknown']);
+});
+
+test('a pyproject.toml that fits is neither marked nor reported', () => {
+  assert.equal(pyproject(PYPROJECT_KEPT.length, 'dependencyFiles')[0].text, PYPROJECT_KEPT);
+  assert.deepEqual(pyproject(PYPROJECT_KEPT.length, 'limits'), []);
+  assert.deepEqual(pyproject(PYPROJECT_KEPT.length - 1, 'limits').length, 1);
 });
 
 const status = (notionUrl, limits) => evaluate(node('Data Table - Save Analysis').parameters.columns.value.deliveryStatus,
@@ -96,6 +112,7 @@ const status = (notionUrl, limits) => evaluate(node('Data Table - Save Analysis'
 test('only a report with a Notion page and no unreadable file is marked complete', () => {
   assert.equal(status('https://notion.so/p', []), 'complete');
   assert.equal(status('https://notion.so/p', ['o/r: README.md could not be read at the examined version (README.rst and other names are not read)']), 'complete');
+  assert.equal(status('https://notion.so/p', ['o/r: pyproject.toml cut at 5000 characters, the rest is unknown']), 'complete');
   assert.equal(status('https://notion.so/p', ['o/r: pyproject.toml could not be read (API rate limit exceeded)']), 'degraded');
   assert.equal(status('', []), 'notion failed');
 });

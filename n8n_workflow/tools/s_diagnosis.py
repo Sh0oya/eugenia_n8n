@@ -67,6 +67,6 @@ def build(w):
     w.link("Gemini Chat - Main Model", "Basic LLM Chain - Write Diagnostic", 0, 0, "ai_languageModel")
     w.link("Gemini Chat - Fallback Model", "Basic LLM Chain - Write Diagnostic", 0, 1, "ai_languageModel")
     w.link("Output Parser - Diagnostic Schema", "Basic LLM Chain - Write Diagnostic", 0, 0, "ai_outputParser")
-    w.group("## 5. AI diagnostic\nPrompt built from the course rules (role in the system message, XML sections, five examples, XML inputs). Gemini Flash, latest alias, with a Flash-Lite fallback and a structured output parser with a strict schema. The Code node then refuses any answer that contradicts the GitHub evidence and removes links and images that the inputs do not contain.",
+    w.group("## 5. AI diagnostic\nPrompt built from the course rules (role in the system message, XML sections, five examples, XML inputs). Gemini Flash, latest alias, with a Flash-Lite fallback and a structured output parser with a strict schema. The Code node then refuses any answer that contradicts the GitHub evidence and removes images, tags and links to addresses that the inputs do not contain.",
             ["XML - Convert Inputs", "Basic LLM Chain - Write Diagnostic", "Gemini Chat - Main Model", "Gemini Chat - Fallback Model", "Output Parser - Diagnostic Schema",
              "Code - Validate and Finalize Diagnostic"])

@@ -9,10 +9,16 @@ const failure = answer.error ? String(answer.error.message || answer.error).slic
 const repository = input.repository;
 
 // The AI text is written into a Notion page and an e-mail, and a README can try to steer it (prompt injection).
-// Only links to the examined repository and to the user's own decisions survive; images and HTML-like tags never do.
+// Images, HTML-like tags and Markdown links to an address that the inputs do not contain never survive; a plain URL is kept.
+const trimUrl = url => String(url).trim().replace(/[.,;:!?]+$/, '').toLowerCase();
+const inputUrls = new Set((JSON.stringify(input).match(/https?:\/\/[^\s)\]>"'<\\]+/g) || []).map(trimUrl));
 const allowedPrefixes = [repository.url, ...input.decisions.map(d => d.url)].filter(Boolean).map(u => u.toLowerCase());
-const allowed = url => { const u = String(url).toLowerCase(); return allowedPrefixes.some(p => u === p || ['/', '#', '?'].some(c => u.startsWith(p + c))); };
-const scrub = text => String(text).replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\b(?:https?:\/\/|javascript:|vbscript:|data:[a-z]+\/)[^\s)\]>"'<]*/gi, u => (allowed(u.replace(/[.,;:!?]+$/, '')) ? u : '[link removed]')).replace(/<(?=[A-Za-z/!?])/g, '‹');
+const allowed = url => { const u = trimUrl(url); return inputUrls.has(u) || allowedPrefixes.some(p => u === p || ['/', '#', '?'].some(c => u.startsWith(p + c))); };
+const scrub = text => String(text)
+  .replace(/!\[[^\]]*\](?:\([^)]*\)|\[[^\]]*\])/g, '')
+  .replace(/^[ \t]*\[[^\]]+\]:[ \t]*\S+.*$/gm, '')
+  .replace(/\[([^\]]*)\]\(([^)]*)\)/g, (link, label, url) => (allowed(url) ? link : label))
+  .replace(/<(?=[A-Za-z/!?])/g, '‹');
 const sanitize = (value, key) => (typeof value === 'string' ? (key === 'url' ? (allowed(value) ? value : '') : scrub(value))
   : Array.isArray(value) ? value.map(v => sanitize(v)) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, sanitize(v, k)])) : value);
 const output = sanitize(answer.output || {});

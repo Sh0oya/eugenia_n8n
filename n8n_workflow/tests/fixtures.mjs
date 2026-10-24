@@ -21,7 +21,14 @@ export const answer = (overrides = {}) => ({
     sources: [{ url: `${REPO}/releases/tag/v1`, type: 'github', usage: 'u' }], unknowns: [], ...overrides },
 });
 
-export const EVIDENCE = { key: 'acme/tool', url: REPO, tag: 'v1', versionKind: 'stable release', releaseUrl: `${REPO}/releases/tag/v1`, publishedAt: '', license: 'MIT' };
+// What the repository gave the AI: the README and pyproject.toml hold the only addresses that are not on GitHub.
+export const DOCS = 'https://docs.acme.example/install';
+export const INDEX = 'https://pypi.acme.example/simple';
+export const EVIDENCE = {
+  key: 'acme/tool', url: REPO, tag: 'v1', versionKind: 'stable release', releaseUrl: `${REPO}/releases/tag/v1`, publishedAt: '', license: 'MIT',
+  readme: `# Tool\nInstall: see ${DOCS}.`, releaseNotes: '',
+  dependencyFiles: [{ path: 'pyproject.toml', url: `${REPO}/blob/v1/pyproject.toml`, text: `[tool.uv]\nindex-url = "${INDEX}"` }],
+};
 export const CONFIGURATION = { schemaVersion: '4.0', diagnosticModel: 'gemini-flash-latest', notificationEmail: 'moi@example.com' };
 
 // Output of "Code - Validate and Finalize Diagnostic" for a given AI answer (or error).
