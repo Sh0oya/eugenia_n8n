@@ -44,26 +44,6 @@ flowchart LR
 3. **Outils** — GitHub, Notion, Gemini, Gmail, Data Tables, tous en nodes natifs.
 4. **Architecture** — un seul workflow, 7 blocs visibles (un sticky note gris par bloc) autour d'un seul nœud `CONFIGURATION`.
 
-## Le canvas
-
-Dessiné depuis le JSON livré (mêmes positions et mêmes sticky notes que dans n8n ; le fichier SVG se zoome) : [`docs/img/canvas-plan.svg`](docs/img/canvas-plan.svg).
-
-![Plan du canvas](docs/img/canvas-plan.svg)
-
-## Ce que ça produit
-
-| E-mail reçu | Une carte par dépôt |
-|---|---|
-| ![E-mail : recommandation](docs/img/email-top.jpg) | ![E-mail : carte d'un dépôt](docs/img/email-card.jpg) |
-
-*Rapport réel produit par le workflow sur `huggingface/lerobot` (version v0.6.1).*
-
-La page créée dans la base « Analyses » de Notion :
-
-![Page Notion : propriétés](docs/img/notion-page-properties.png)
-
-![Page Notion : rapport](docs/img/notion-page-report.png)
-
 ## Les règles du cours
 
 Le workflow suit le cours « n8n x Eugenia » :
@@ -107,6 +87,26 @@ Le workflow suit le cours « n8n x Eugenia » :
 - le chemin « rapport existant » et la lecture d'une vraie décision : couverts seulement par les tests automatiques ;
 - les e-mails : testés en local (rendu à partir de données d'essai) et par deux envois réels dont le contenu a été reconstruit à partir des sorties des nodes, la boîte de réception n'a pas été relue ;
 - la marge de temps reste faible : 89 s et 165 s observées pour 180 s autorisées par l'offre d'essai.
+
+## Le canvas
+
+Dessiné depuis le JSON livré (mêmes positions et mêmes sticky notes que dans n8n ; le fichier SVG se zoome) : [`docs/img/canvas-plan.svg`](docs/img/canvas-plan.svg).
+
+![Plan du canvas](docs/img/canvas-plan.svg)
+
+## Ce que ça produit
+
+| E-mail reçu | Une carte par dépôt |
+|---|---|
+| ![E-mail : recommandation](docs/img/email-top.jpg) | ![E-mail : carte d'un dépôt](docs/img/email-card.jpg) |
+
+*Rapport réel produit par le workflow sur `huggingface/lerobot` (version v0.6.1).*
+
+La page créée dans la base « Analyses » de Notion :
+
+![Page Notion : propriétés](docs/img/notion-page-properties.png)
+
+![Page Notion : rapport](docs/img/notion-page-report.png)
 
 ## Mise en service et exploitation
 
