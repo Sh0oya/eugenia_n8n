@@ -6,12 +6,12 @@ Sections imposées par le cours (module « Livraison »). Le détail de mise en 
 
 | | |
 |---|---|
-| Workflow | `Can My PC Run It`, version 3.1 (schéma du diagnostic 3.1) |
+| Workflow | `Can My PC Run It` (`cEcTO8OAfKP76M2N`), schéma du diagnostic 4.0 ; publié le 28/10/2026 |
 | Rôle | dire, avant d'installer un outil GitHub public, s'il tournera sur le PC de Mathieu et avec ses outils (rapport en français : e-mail et page Notion) |
 | Propriétaire métier | Mathieu Haye |
 | Propriétaire technique | Mathieu Haye |
 | Projet n8n | Personal, dossier Sandbox |
-| Déclencheur | formulaire protégé par Basic Auth (`/form/can-my-pc-run-it`) ; l'Error Trigger fait du workflow son propre Error workflow |
+| Déclencheur | formulaire protégé par Basic Auth (`/form/can-my-pc-run-it`, un champ « URL GitHub » : un dépôt par demande) ; l'Error Trigger fait du workflow son propre Error workflow |
 | Livrable | 1 page dans la base Notion « Analyses », 1 e-mail HTML, 1 ligne dans `analysis_history` |
 | Volume attendu | usage manuel et ponctuel, une demande à la fois, un dépôt par demande (hypothèse à confirmer par Mathieu : moins de 20 demandes par mois) |
 | Coût par exécution | voir « Coût et quotas » du README (jusqu'à 4 appels Gemini ; aucun budget mensuel automatique) |
@@ -36,7 +36,7 @@ Data Tables n8n : `analysis_history` et `error_incidents` (colonnes dans le READ
 - Canal d'alerte : **Gmail, le même que celui de la livraison**. Si le credential Gmail tombe, aucune alerte ne part : regarder la liste des exécutions de n8n et `error_incidents`.
 - Une demande invalide (URL refusée, plusieurs dépôts) est aussi une exécution en erreur, donc un e-mail avec la raison.
 - Réglage à faire une fois : `Settings` → `Error workflow` → choisir ce même workflow (possible seulement après la première publication).
-- Audit tous les 3 à 6 mois (prochain : avant le 23/04/2027), noté dans la sticky « Journal des Revues » du canvas : nodes obsolètes, modèles `latest`, prompt, credentials à renouveler.
+- Audit tous les 3 à 6 mois (prochain : avant le 28/04/2027), noté dans la sticky « Journal des Revues » du canvas : nodes obsolètes, modèles `latest`, prompt, credentials à renouveler.
 
 ## Kill switch
 
@@ -44,3 +44,4 @@ Data Tables n8n : `analysis_history` et `error_incidents` (colonnes dans le READ
 2. Annuler les exécutions en cours depuis la liste des exécutions.
 3. Si une fuite est suspectée : révoquer la clé Gemini, le token GitHub et l'accès de l'intégration Notion, puis changer le mot de passe du credential Basic Auth.
 4. Pour repartir : republier, vérifier le Error workflow, relancer une demande de test.
+5. Revenir en arrière : dans l'historique du workflow de n8n, republier une version antérieure (elle y reste tant que la durée de conservation de l'historique le permet).

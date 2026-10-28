@@ -1589,12 +1589,12 @@
     },
     {
       "parameters": {
-        "content": "### Journal des Revues\n- **24/10/2026 (M. Haye)** : real test of the 3.1 copy: link filter relaxed (plain URLs stay, links to addresses of the inputs stay), cut of pyproject.toml marked, seven more tests.\n- **23/10/2026 (M. Haye)** : prompt reviewed again: examples written with the real input tags, examination limits given once, tests for the four e-mails and the prompt.\n- **23/10/2026 (M. Haye)** : hostile review and fixes: AI links and images filtered, text cleaned before the XML node, only fully delivered reports reused, default branch examined when there is no stable release, exact tool matching, environment and item limit with a Limit node. Simplified to 40 nodes: attachment, repair model, table setup, loop over several repositories with a comparison, issues and requirements.txt removed. Gemini models and prompt reviewed: same models, prompt rules changed for the default branch, exact tool matching and the single report.\n- **23/10/2026 (M. Haye)** : v3.0, seven workflows merged into one.\n- **21/10/2026 (M. Haye)** : v2.0, first production version, seven workflows.\nNext audit: before 23/04/2027.",
+        "content": "### Journal des Revues\n- **28/10/2026 (M. Haye)** : init: first delivery, published on the n8n instance. Gemini models and prompt reviewed.\nNext audit: before 28/04/2027.",
         "width": 860,
         "height": 250,
         "color": 7
       },
-      "id": "ab8efd47-9599-575e-ac2a-bcbbea178337",
+      "id": "9c4f059e-7846-5a4b-9563-f47f1505c97d",
       "name": "Sticky Note 9",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -1621,7 +1621,7 @@
     },
     {
       "parameters": {
-        "content": "## Ideas for later\n- Daily check of the Notion inventory that queues the analyses to redo.\n- Monthly budget guard and a replay queue for failed deliveries.\n- Vector search for the context once the inventory grows.\n- Other README formats and install files read next to README.md.\nThe first three exist in the 157-node version (git history, commit b4c46da). Several repositories per request with a comparison, issues about installation and requirements.txt exist in the 47-node version (commit 6760340).",
+        "content": "## Ideas for later\n- Daily check of the Notion inventory that queues the analyses to redo.\n- Monthly budget guard and a replay queue for failed deliveries.\n- Vector search for the context once the inventory grows.\n- Other README formats and install files read next to README.md.\n- Several repositories per request with a comparison, and the issues about installation as extra evidence.",
         "width": 860,
         "height": 230,
         "color": 4

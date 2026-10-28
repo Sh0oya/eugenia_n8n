@@ -1,6 +1,6 @@
 {
   "name": "can-my-pc-run-it",
-  "version": "3.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "n8n workflow that diagnoses public GitHub repositories for a personal PC, with its generator and n8n-cli checks.",
   "type": "module",

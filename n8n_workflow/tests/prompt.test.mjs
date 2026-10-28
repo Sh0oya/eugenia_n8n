@@ -79,6 +79,6 @@ test('the prompt follows the course: role alone in the system message, XML secti
   assert.deepEqual([...USER.matchAll(/^(\d+)\. /gm)].map(m => Number(m[1])), Array.from({ length: 12 }, (_, i) => i + 1), 'the 12 rules are numbered without a gap');
 });
 
-test('the prompt knows nothing of the removed features', () => {
+test('the prompt has no rule about comparing repositories or reading issues', () => {
   assert.doesNotMatch(USER, /compare mode|comparison|issues about|reports/i);
 });
