@@ -8,7 +8,7 @@ Livrable de Mathieu Haye pour le cours « n8n x Eugenia » (Lucas Peyrin) : **un
 
 | Je veux… | J'ouvre |
 |---|---|
-| **regarder la vidéo d'explication** | [▶ `explication-n8n.mp4`](n8n_workflow/docs/explication-n8n.mp4) |
+| **regarder la vidéo d'explication** | [▶ `explication-n8n.mp4`](n8n_workflow/docs/explication-n8n.mp4) et [sa transcription](n8n_workflow/docs/explication-n8n-transcript.md) |
 | comprendre le workflow en 2 minutes (schéma, captures) | [`n8n_workflow/README.md`](n8n_workflow/README.md) |
 | voir le canvas n8n en entier (sticky notes, 7 blocs) | [`n8n_workflow/docs/img/canvas-plan.svg`](n8n_workflow/docs/img/canvas-plan.svg) |
 | vérifier les règles du cours, une par une | [Les règles du cours](n8n_workflow/README.md#les-règles-du-cours) |
