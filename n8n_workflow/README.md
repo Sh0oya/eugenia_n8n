@@ -8,6 +8,7 @@
 
 | Je veux… | J'ouvre |
 |---|---|
+| **regarder la vidéo d'explication** | [▶ `docs/explication-n8n.mp4`](docs/explication-n8n.mp4) |
 | comprendre le fonctionnement | [Comment ça marche](#comment-ça-marche), puis [le canvas](#le-canvas) et [ce que ça produit](#ce-que-ça-produit) |
 | vérifier les règles du cours | [Les règles du cours](#les-règles-du-cours) et [les tests effectués](#tests-effectués) |
 | importer le workflow dans n8n | [`exports/can-my-pc-run-it.json`](exports/can-my-pc-run-it.json) (import direct) |
